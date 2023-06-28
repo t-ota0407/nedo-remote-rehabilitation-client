@@ -7,9 +7,11 @@ public class StartSceneManager : MonoBehaviour
     [Header("Reference")]
     [SerializeField] private GameObject startUI;
     [SerializeField] private GameObject fadeCanvas;
+    [SerializeField] private GameObject loadingCanvas;
 
     private StartUIManager startUIManager;
     private FadeManager fadeManager;
+    private LoadingProgressManager loadingProgressManager;
 
     private bool isLoadingNextScene = false;
 
@@ -18,6 +20,7 @@ public class StartSceneManager : MonoBehaviour
     {
         startUIManager = startUI.GetComponent<StartUIManager>();
         fadeManager = fadeCanvas.GetComponent<FadeManager>();
+        loadingProgressManager = loadingCanvas.GetComponent<LoadingProgressManager>();
     }
 
     // Update is called once per frame
@@ -50,7 +53,9 @@ public class StartSceneManager : MonoBehaviour
 
         while (!asyncLoad.isDone)
         {
-            // indicator‚ð‰ñ‚·
+            loadingProgressManager.SetProgress(asyncLoad.progress);
+            Debug.Log(asyncLoad.progress);
+            
             if (asyncLoad.progress > 0.95f)
             {
                 asyncLoad.allowSceneActivation = true;
