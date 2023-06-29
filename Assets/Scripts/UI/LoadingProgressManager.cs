@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class LoadingProgressManager : MonoBehaviour
 {
+    [SerializeField] private GameObject loadingComponent;
     [SerializeField] private Image progressIndicatorImage;
     [SerializeField] private Text percentageText;
     [SerializeField] private Text statusText;
@@ -21,6 +22,11 @@ public class LoadingProgressManager : MonoBehaviour
         
     }
 
+    public void Display()
+    {
+        loadingComponent.SetActive(true);
+    }
+
     public void SetProgress(float loadingProgress)
     {
         if (loadingProgress < 0)
@@ -29,6 +35,6 @@ public class LoadingProgressManager : MonoBehaviour
             loadingProgress = 1;
 
         progressIndicatorImage.fillAmount = loadingProgress;
-        percentageText.text = (loadingProgress * 100).ToString("F0");
+        percentageText.text = (loadingProgress * 100).ToString("F0") + "%";
     }
 }

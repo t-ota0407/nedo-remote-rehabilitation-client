@@ -1,9 +1,13 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class StartSceneManager : MonoBehaviour
 {
+    private const int sceneTransitionMaximumWaitDuration = 10000;
+    private const float sceneTransitionMinimumLoadingProgress = 0.89f;
+
     [Header("Reference")]
     [SerializeField] private GameObject startUI;
     [SerializeField] private GameObject fadeCanvas;
@@ -31,6 +35,7 @@ public class StartSceneManager : MonoBehaviour
             if (fadeManager.FadeStatus == FadeStatus.Idle)
             {
                 fadeManager.StartFadeOut();
+                loadingProgressManager.Display();
             }
 
             if (fadeManager.FadeStatus == FadeStatus.Finished && !isLoadingNextScene)
@@ -50,18 +55,21 @@ public class StartSceneManager : MonoBehaviour
     {
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Rehabilitation");
         asyncLoad.allowSceneActivation = false;
+        DateTime sceneLoadStartTime = DateTime.Now;
 
         while (!asyncLoad.isDone)
         {
             loadingProgressManager.SetProgress(asyncLoad.progress);
-            Debug.Log(asyncLoad.progress);
-            
-            if (asyncLoad.progress > 0.95f)
+
+            bool isWaitedEnough = (DateTime.Now - sceneLoadStartTime).TotalMilliseconds >= sceneTransitionMaximumWaitDuration;
+            bool isLoadedEnough = asyncLoad.progress >= sceneTransitionMinimumLoadingProgress;
+
+            if (isWaitedEnough && isLoadedEnough)
             {
                 asyncLoad.allowSceneActivation = true;
             }
+
             yield return null;
         }
-
     }
 }
