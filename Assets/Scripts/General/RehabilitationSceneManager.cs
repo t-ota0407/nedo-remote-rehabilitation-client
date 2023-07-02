@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class RehabilitationSceneManager : MonoBehaviour
 {
+
     [SerializeField] private GameObject fadeCanvas;
     [SerializeField] private GameObject loadingCanvas;
     [SerializeField] private GameObject myAvatar;

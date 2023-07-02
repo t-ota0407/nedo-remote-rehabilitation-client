@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR;
 using RootMotion.FinalIK;
 
 public class MyAvatarManager : MonoBehaviour, AvatarManager
 {
+    [SerializeField] private ControllerInputManager controllerInputManager;
+
     [SerializeField] private GameObject instantiationModelParent;
 
     [SerializeField] private GameObject hmd;
@@ -22,6 +25,9 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
 
     private VRIK vrik;
 
+    private bool isInKnifeSharpeningSetupEnteringArea = false;
+    private KnifeSharpeningSetupManager targetSharpeningSetupManager;
+
     void Awake()
     {
         uuid = Guid.NewGuid().ToString();
@@ -36,7 +42,48 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
     // Update is called once per frame
     void Update()
     {
+        switch (avatarState)
+        {
+            case AvatarState.Walking:
+                
+                if (controllerInputManager == null)
+                {
+                    controllerInputManager = this.transform.GetComponent<ControllerInputManager>();
+                    Debug.Log("nulldayo");
+                }
+                if (controllerInputManager.IsPressedButtonA && isInKnifeSharpeningSetupEnteringArea)
+                {
+                    // モードの遷移
+                    transform.position = targetSharpeningSetupManager.transform.position;
+                    avatarState = AvatarState.KnifeSharpening;
+                }
+                break;
+            case AvatarState.KnifeSharpening:
+                if (controllerInputManager.IsPressedButtonB)
+                {
+                    // モードの遷移
+                    avatarState = AvatarState.Walking;
+                }
+                break;
+        }
         UpdateVrikTargetPosture();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "KnifeSharpeningSetup")
+        {
+            isInKnifeSharpeningSetupEnteringArea = true;
+            targetSharpeningSetupManager = other.transform.GetComponent<KnifeSharpeningSetupManager>();
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "KnifeSharpeningSetup")
+        {
+            isInKnifeSharpeningSetupEnteringArea = false;
+        }
     }
 
     public string UUID()
@@ -60,35 +107,36 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
         avatarModel = Instantiate(avatarModel, instantiationModelParent.transform);
         avatarModel.AddComponent<VRIK>();
         vrik = avatarModel.GetComponent<VRIK>();
-        ChangeFinalIKSetting();
-    }
-
-    private void ChangeFinalIKSetting()
-    {
-        switch (avatarState)
-        {
-            case AvatarState.Walking:
-                vrik.solver.spine.headTarget = vrikHeadTarget.transform;
-                vrik.solver.leftArm.target = vrikLeftHandTarget.transform;
-                vrik.solver.rightArm.target = vrikRightHandTarget.transform;
-                break;
-            case AvatarState.KnifeSharpening:
-                vrik.solver.spine.headTarget = vrikHeadTarget.transform;
-                vrik.solver.leftArm.target = vrikLeftHandTarget.transform;
-                vrik.solver.rightArm.target = vrikRightHandTarget.transform;
-                break;
-        }
+        vrik.solver.spine.headTarget = vrikHeadTarget.transform;
+        vrik.solver.leftArm.target = vrikLeftHandTarget.transform;
+        vrik.solver.rightArm.target = vrikRightHandTarget.transform;
     }
 
     private void UpdateVrikTargetPosture()
     {
-        vrikHeadTarget.transform.position = hmd.transform.position;
-        vrikHeadTarget.transform.rotation = Quaternion.Euler(hmd.transform.rotation.eulerAngles + new Vector3(0, -90, -90));
+        switch (avatarState)
+        {
+            case AvatarState.Walking:
+                vrikHeadTarget.transform.position = hmd.transform.position;
+                vrikHeadTarget.transform.rotation = Quaternion.Euler(hmd.transform.rotation.eulerAngles + new Vector3(0, -90, -90));
 
-        vrikLeftHandTarget.transform.position = leftController.transform.position;
-        vrikLeftHandTarget.transform.rotation = leftController.transform.rotation;
+                vrikLeftHandTarget.transform.position = leftController.transform.position;
+                vrikLeftHandTarget.transform.rotation = leftController.transform.rotation;
 
-        vrikRightHandTarget.transform.position = rightController.transform.position;
-        vrikRightHandTarget.transform.rotation = rightController.transform.rotation;
+                vrikRightHandTarget.transform.position = rightController.transform.position;
+                vrikRightHandTarget.transform.rotation = rightController.transform.rotation;
+
+                break;
+
+            case AvatarState.KnifeSharpening:
+                vrikHeadTarget.transform.position = hmd.transform.position;
+                vrikHeadTarget.transform.rotation = Quaternion.Euler(hmd.transform.rotation.eulerAngles + new Vector3(0, -90, -90));
+
+                vrikLeftHandTarget.transform.position =　targetSharpeningSetupManager.MinReachingOrigin.transform.position;
+                
+                vrikRightHandTarget.transform.position = targetSharpeningSetupManager.MinReachingOrigin.transform.position;
+                break;
+        }
+
     }
 }
