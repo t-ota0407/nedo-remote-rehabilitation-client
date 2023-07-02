@@ -2,9 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using RootMotion.FinalIK;
 
 public class MyAvatarManager : MonoBehaviour, AvatarManager
 {
+    [SerializeField] private GameObject instantiationModelParent;
+
     [SerializeField] private GameObject hmd;
     [SerializeField] private GameObject leftController;
     [SerializeField] private GameObject rightController;
@@ -15,6 +18,10 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
 
     private string uuid;
 
+    private AvatarState avatarState;
+
+    private VRIK vrik;
+
     void Awake()
     {
         uuid = Guid.NewGuid().ToString();
@@ -23,7 +30,7 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
     // Start is called before the first frame update
     void Start()
     {
-        
+        avatarState = AvatarState.Walking;
     }
 
     // Update is called once per frame
@@ -45,6 +52,32 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
     public Vector3 HeadRotation()
     {
         return hmd.transform.rotation.eulerAngles;
+    }
+
+    public void InitializeAvatar(string avatarAssetPath)
+    {
+        GameObject avatarModel = (GameObject)Resources.Load(avatarAssetPath);
+        avatarModel = Instantiate(avatarModel, instantiationModelParent.transform);
+        avatarModel.AddComponent<VRIK>();
+        vrik = avatarModel.GetComponent<VRIK>();
+        ChangeFinalIKSetting();
+    }
+
+    private void ChangeFinalIKSetting()
+    {
+        switch (avatarState)
+        {
+            case AvatarState.Walking:
+                vrik.solver.spine.headTarget = vrikHeadTarget.transform;
+                vrik.solver.leftArm.target = vrikLeftHandTarget.transform;
+                vrik.solver.rightArm.target = vrikRightHandTarget.transform;
+                break;
+            case AvatarState.KnifeSharpening:
+                vrik.solver.spine.headTarget = vrikHeadTarget.transform;
+                vrik.solver.leftArm.target = vrikLeftHandTarget.transform;
+                vrik.solver.rightArm.target = vrikRightHandTarget.transform;
+                break;
+        }
     }
 
     private void UpdateVrikTargetPosture()
