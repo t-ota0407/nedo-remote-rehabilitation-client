@@ -42,30 +42,7 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
     // Update is called once per frame
     void Update()
     {
-        switch (avatarState)
-        {
-            case AvatarState.Walking:
-                
-                if (controllerInputManager == null)
-                {
-                    controllerInputManager = this.transform.GetComponent<ControllerInputManager>();
-                    Debug.Log("nulldayo");
-                }
-                if (controllerInputManager.IsPressedButtonA && isInKnifeSharpeningSetupEnteringArea)
-                {
-                    // モードの遷移
-                    transform.position = targetSharpeningSetupManager.transform.position;
-                    avatarState = AvatarState.KnifeSharpening;
-                }
-                break;
-            case AvatarState.KnifeSharpening:
-                if (controllerInputManager.IsPressedButtonB)
-                {
-                    // モードの遷移
-                    avatarState = AvatarState.Walking;
-                }
-                break;
-        }
+        UpdateAvatarState();
         UpdateVrikTargetPosture();
     }
 
@@ -112,6 +89,34 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
         vrik.solver.rightArm.target = vrikRightHandTarget.transform;
     }
 
+    private void UpdateAvatarState()
+    {
+        switch (avatarState)
+        {
+            case AvatarState.Walking:
+                if (controllerInputManager == null)
+                {
+                    controllerInputManager = transform.GetComponent<ControllerInputManager>();
+                }
+
+                if (controllerInputManager.IsPressedButtonA && isInKnifeSharpeningSetupEnteringArea)
+                {
+                    transform.position = targetSharpeningSetupManager.transform.position;
+                    avatarState = AvatarState.KnifeSharpening;
+                }
+
+                break;
+
+            case AvatarState.KnifeSharpening:
+                if (controllerInputManager.IsPressedButtonB)
+                {
+                    avatarState = AvatarState.Walking;
+                }
+
+                break;
+        }
+    }
+
     private void UpdateVrikTargetPosture()
     {
         switch (avatarState)
@@ -132,11 +137,17 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
                 vrikHeadTarget.transform.position = hmd.transform.position;
                 vrikHeadTarget.transform.rotation = Quaternion.Euler(hmd.transform.rotation.eulerAngles + new Vector3(0, -90, -90));
 
-                vrikLeftHandTarget.transform.position =　targetSharpeningSetupManager.MinReachingOrigin.transform.position;
-                
-                vrikRightHandTarget.transform.position = targetSharpeningSetupManager.MinReachingOrigin.transform.position;
+                float controllersDistance = Vector3.Distance(leftController.transform.position, rightController.transform.position);
+                float maxDistance = 0.5f;
+                float reachingRation = Mathf.Clamp01(1 - controllersDistance / maxDistance);
+                Vector3 minReachingPosition = targetSharpeningSetupManager.MinReachingOrigin.transform.position;
+                Vector3 maxReachingPosition = targetSharpeningSetupManager.MaxReachingOrigin.transform.position;
+                Vector3 reachingTargetPosition = Vector3.Lerp(minReachingPosition, maxReachingPosition, reachingRation);
+
+                vrikLeftHandTarget.transform.position =　reachingTargetPosition + new Vector3(-0.1f, 0, 0);
+                vrikRightHandTarget.transform.position = reachingTargetPosition + new Vector3(0.1f, 0, 0);
+
                 break;
         }
-
     }
 }
