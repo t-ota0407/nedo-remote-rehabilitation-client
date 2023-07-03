@@ -123,13 +123,13 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
         {
             case AvatarState.Walking:
                 vrikHeadTarget.transform.position = hmd.transform.position;
-                vrikHeadTarget.transform.rotation = Quaternion.Euler(hmd.transform.rotation.eulerAngles + new Vector3(0, -90, -90));
+                vrikHeadTarget.transform.rotation = hmd.transform.rotation * Quaternion.Euler(0, -90, -90);
 
                 vrikLeftHandTarget.transform.position = leftController.transform.position;
-                vrikLeftHandTarget.transform.rotation = leftController.transform.rotation;
+                vrikLeftHandTarget.transform.rotation = leftController.transform.rotation * Quaternion.Euler(90, 0, -90);
 
                 vrikRightHandTarget.transform.position = rightController.transform.position;
-                vrikRightHandTarget.transform.rotation = rightController.transform.rotation;
+                vrikRightHandTarget.transform.rotation = rightController.transform.rotation * Quaternion.Euler(-90, 0, 90);
 
                 break;
 
