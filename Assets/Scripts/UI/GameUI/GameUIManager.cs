@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class GameUIManager : MonoBehaviour
 {
     private const int LogLineMaxLength = 21;
+    private const float CanvasRotationSpeed = 1.5f;
 
     [SerializeField] private TextMeshProUGUI sharpenedKnifeNumberText;
     [SerializeField] private TextMeshProUGUI knifePerSecondNumberText;
@@ -24,6 +25,9 @@ public class GameUIManager : MonoBehaviour
     [SerializeField] private FacilityCardManager alchemistCardManager;
     [SerializeField] private FacilityCardManager wizardCardManager;
 
+    private bool isRotating;
+    private Quaternion rotationTargetPosture;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -33,10 +37,19 @@ public class GameUIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (isRotating)
+        {
+            transform.rotation = Quaternion.Lerp(transform.rotation, rotationTargetPosture, CanvasRotationSpeed * Time.deltaTime);
+        }
     }
 
-    public void UpdateProgress(int sharpenedKnife)
+    public void StartRotation(Quaternion targetPosture)
+    {
+        isRotating = true;
+        rotationTargetPosture = targetPosture;
+    }
+
+    public void UpdateSharpenedKnifeNumber(int sharpenedKnife)
     {
         sharpenedKnifeNumberText.text = sharpenedKnife.ToString();
     }

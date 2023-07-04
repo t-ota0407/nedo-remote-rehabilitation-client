@@ -10,13 +10,15 @@ public class KnifeSharpeningSetupManager : MonoBehaviour
     [SerializeField] private Material isInAreaMaterial;
     [SerializeField] private Material usedAreaMaterial;
 
+    public KnifeManager KnifeManager { get { return knifeManager; } }
+    [SerializeField] private KnifeManager knifeManager;
+
     public GameObject StandingOrigin { get { return standingOrigin; } }
     [SerializeField] private GameObject standingOrigin;
     public GameObject MinReachingOrigin { get { return minReachingOrigin; } }
     [SerializeField] private GameObject minReachingOrigin;
     public GameObject MaxReachingOrigin { get { return maxReachingOrigin; } }
     [SerializeField] private GameObject maxReachingOrigin;
-    
 
     private int playerInArea = 0;
     public bool IsEnterd

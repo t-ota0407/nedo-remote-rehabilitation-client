@@ -19,6 +19,8 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
     [SerializeField] private GameObject vrikLeftHandTarget;
     [SerializeField] private GameObject vrikRightHandTarget;
 
+    [SerializeField] private GamificationManager gamificationManager;
+
     private string uuid;
 
     private AvatarState avatarState;
@@ -78,6 +80,20 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
         return hmd.transform.rotation.eulerAngles;
     }
 
+    public float ReachingProgress()
+    {
+        if (avatarState == AvatarState.Walking)
+        {
+            return 0;
+        }
+
+        float controllersDistance = Vector3.Distance(leftController.transform.position, rightController.transform.position);
+        float maxPhysicalDistance = 0.5f;
+        float reachingProgress = Mathf.Clamp01(1 - controllersDistance / maxPhysicalDistance);
+
+        return reachingProgress;
+    }
+
     public void InitializeAvatar(string avatarAssetPath)
     {
         GameObject avatarModel = (GameObject)Resources.Load(avatarAssetPath);
@@ -102,6 +118,9 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
                 if (controllerInputManager.IsPressedButtonA && isInKnifeSharpeningSetupEnteringArea)
                 {
                     transform.position = targetSharpeningSetupManager.transform.position;
+
+                    gamificationManager.ContinueGame(targetSharpeningSetupManager);
+
                     avatarState = AvatarState.KnifeSharpening;
                 }
 
@@ -137,12 +156,10 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
                 vrikHeadTarget.transform.position = hmd.transform.position;
                 vrikHeadTarget.transform.rotation = Quaternion.Euler(hmd.transform.rotation.eulerAngles + new Vector3(0, -90, -90));
 
-                float controllersDistance = Vector3.Distance(leftController.transform.position, rightController.transform.position);
-                float maxDistance = 0.5f;
-                float reachingRation = Mathf.Clamp01(1 - controllersDistance / maxDistance);
+                float reachingProgress = ReachingProgress();
                 Vector3 minReachingPosition = targetSharpeningSetupManager.MinReachingOrigin.transform.position;
                 Vector3 maxReachingPosition = targetSharpeningSetupManager.MaxReachingOrigin.transform.position;
-                Vector3 reachingTargetPosition = Vector3.Lerp(minReachingPosition, maxReachingPosition, reachingRation);
+                Vector3 reachingTargetPosition = Vector3.Lerp(minReachingPosition, maxReachingPosition, reachingProgress);
 
                 vrikLeftHandTarget.transform.position =Å@reachingTargetPosition + new Vector3(-0.1f, 0, 0);
                 vrikRightHandTarget.transform.position = reachingTargetPosition + new Vector3(0.1f, 0, 0);
