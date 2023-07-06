@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
+using UnityEngine.XR.Interaction.Toolkit;
 using RootMotion.FinalIK;
+
 
 public class MyAvatarManager : MonoBehaviour, AvatarManager
 {
@@ -15,6 +17,9 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
     [SerializeField] private GameObject hmd;
     [SerializeField] private GameObject leftController;
     [SerializeField] private GameObject rightController;
+
+    [SerializeField] private GameObject leftRayInteractor;
+    [SerializeField] private GameObject rightRayInteractor;
 
     [SerializeField] private GameObject vrikHeadTarget;
     [SerializeField] private GameObject vrikLeftHandTarget;
@@ -40,6 +45,8 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
     void Start()
     {
         avatarState = AvatarState.Walking;
+
+        SetControllerAndRaysVisibility(false);
     }
 
     // Update is called once per frame
@@ -120,7 +127,6 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
                 {
                     xrOrigin.transform.position = targetSharpeningSetupManager.StandingOrigin.transform.position;
                     xrOrigin.transform.localRotation = targetSharpeningSetupManager.transform.rotation * Quaternion.Euler(0, 90, 0);
-                    Debug.Log(targetSharpeningSetupManager.transform.rotation.eulerAngles);
 
                     gamificationManager.ContinueGame(targetSharpeningSetupManager);
 
@@ -175,5 +181,13 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
 
                 break;
         }
+    }
+
+    private void SetControllerAndRaysVisibility(bool visibility)
+    {
+        leftController.GetComponent<ActionBasedController>().hideControllerModel = !visibility;
+        rightController.GetComponent<ActionBasedController>().hideControllerModel = !visibility;
+        leftRayInteractor.GetComponent<XRRayInteractor>().enabled = visibility;
+        rightRayInteractor.GetComponent<XRRayInteractor>().enabled = visibility;
     }
 }
