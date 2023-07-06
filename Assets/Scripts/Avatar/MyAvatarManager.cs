@@ -9,6 +9,7 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
 {
     [SerializeField] private ControllerInputManager controllerInputManager;
 
+    [SerializeField] private GameObject xrOrigin;
     [SerializeField] private GameObject instantiationModelParent;
 
     [SerializeField] private GameObject hmd;
@@ -117,7 +118,9 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
 
                 if (controllerInputManager.IsPressedButtonA && isInKnifeSharpeningSetupEnteringArea)
                 {
-                    transform.position = targetSharpeningSetupManager.transform.position;
+                    xrOrigin.transform.position = targetSharpeningSetupManager.StandingOrigin.transform.position;
+                    xrOrigin.transform.localRotation = targetSharpeningSetupManager.transform.rotation * Quaternion.Euler(0, 90, 0);
+                    Debug.Log(targetSharpeningSetupManager.transform.rotation.eulerAngles);
 
                     gamificationManager.ContinueGame(targetSharpeningSetupManager);
 
@@ -161,8 +164,14 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
                 Vector3 maxReachingPosition = targetSharpeningSetupManager.MaxReachingOrigin.transform.position;
                 Vector3 reachingTargetPosition = Vector3.Lerp(minReachingPosition, maxReachingPosition, reachingProgress);
 
-                vrikLeftHandTarget.transform.position =Å@reachingTargetPosition + new Vector3(-0.1f, 0, 0);
-                vrikRightHandTarget.transform.position = reachingTargetPosition + new Vector3(0.1f, 0, 0);
+                vrikLeftHandTarget.transform.position =Å@reachingTargetPosition;
+                vrikRightHandTarget.transform.position = reachingTargetPosition;
+
+                vrikLeftHandTarget.transform.localPosition = vrikLeftHandTarget.transform.localPosition + new Vector3(0, 0, 0.1f);
+                vrikRightHandTarget.transform.localPosition = vrikRightHandTarget.transform.localPosition + new Vector3(-0.15f, -0.03f, 0.08f);
+
+                vrikLeftHandTarget.transform.rotation = targetSharpeningSetupManager.transform.rotation * Quaternion.Euler(0, 0, 180f);
+                vrikRightHandTarget.transform.rotation = targetSharpeningSetupManager.transform.rotation * Quaternion.Euler(0, 0, 180f);
 
                 break;
         }

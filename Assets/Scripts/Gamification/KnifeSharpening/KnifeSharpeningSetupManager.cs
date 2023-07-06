@@ -37,7 +37,7 @@ public class KnifeSharpeningSetupManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     void OnTriggerEnter(Collider other)
@@ -50,8 +50,6 @@ public class KnifeSharpeningSetupManager : MonoBehaviour
 
             enteringAreaMeshRenderer.material = isInAreaMaterial;
         }
-
-
     }
 
     void OnTriggerExit(Collider other)

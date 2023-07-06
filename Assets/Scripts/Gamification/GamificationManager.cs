@@ -32,6 +32,8 @@ public class GamificationManager : MonoBehaviour
         {
             float progress = myAvatarManager.ReachingProgress();
 
+            UpdateKnifePosition(progress);
+
             if (isAscending && progress > 0.95f)
             {
                 targetKnifeSharpeningSetupManager.KnifeManager.IncrementReachingTimes();
@@ -41,15 +43,15 @@ public class GamificationManager : MonoBehaviour
             {
                 isAscending = true;
             }
-        }
 
-        if (targetKnifeSharpeningSetupManager.KnifeManager.IsParticleEffectFinished)
-        {
-            // todo: ëùâ¡ó ÇÕÇƒÇ¢ÇÀÇ¢Ç…ê›íËÇ∑ÇÈ
-            sharpenedKnife += 1;
-            gameUIManager.UpdateSharpenedKnifeNumber(sharpenedKnife);
-            
-            targetKnifeSharpeningSetupManager.KnifeManager.InitializeKnife();
+            if (targetKnifeSharpeningSetupManager.KnifeManager.IsParticleEffectFinished)
+            {
+                // todo: ëùâ¡ó ÇÕÇƒÇ¢ÇÀÇ¢Ç…ê›íËÇ∑ÇÈ
+                sharpenedKnife += 1;
+                gameUIManager.UpdateSharpenedKnifeNumber(sharpenedKnife);
+
+                targetKnifeSharpeningSetupManager.KnifeManager.InitializeKnife();
+            }
         }
 
         CheckEnvironmentEvent();
@@ -59,8 +61,9 @@ public class GamificationManager : MonoBehaviour
 
     public void ContinueGame(KnifeSharpeningSetupManager targetSharpeningSetup)
     {
-        Quaternion gameUITargetPosture = Quaternion.LookRotation(targetSharpeningSetup.transform.position, Vector3.up) * Quaternion.Euler(0, -90, 0);
-        gameUIManager.StartRotation(gameUITargetPosture);
+        Quaternion targetRotation = Quaternion.LookRotation(targetSharpeningSetup.transform.position - gameUIManager.transform.position, Vector3.up) * Quaternion.Euler(0, 180, 0);
+        // Quaternion gameUITargetPosture = targetRotation * gameUIManager.transform.rotation;
+        gameUIManager.StartRotation(targetRotation);
 
         targetKnifeSharpeningSetupManager = targetSharpeningSetup;
         isAscending = true;
@@ -70,6 +73,17 @@ public class GamificationManager : MonoBehaviour
     public void StopGame()
     {
         isPlayingGame = false;
+    }
+
+    private void UpdateKnifePosition(float reachingProgress)
+    {
+        Vector3 minReachingPosition = targetKnifeSharpeningSetupManager.MinReachingOrigin.transform.position;
+        Vector3 maxReachingPosition = targetKnifeSharpeningSetupManager.MaxReachingOrigin.transform.position;
+        Vector3 reachingTargetPosition = Vector3.Lerp(minReachingPosition, maxReachingPosition, reachingProgress);
+
+        GameObject knifeObject = targetKnifeSharpeningSetupManager.KnifeManager.gameObject;
+        knifeObject.transform.position = reachingTargetPosition;
+        knifeObject.transform.localPosition = knifeObject.transform.localPosition + new Vector3(0, -0.04f, -0.24f);
     }
 
     private void CheckEnvironmentEvent()
