@@ -42,10 +42,8 @@ public class KnifeSharpeningSetupManager : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Enter");
         if (other.tag == "Player")
         {
-            Debug.Log("Player");
             playerInArea += 1;
 
             enteringAreaMeshRenderer.material = isInAreaMaterial;

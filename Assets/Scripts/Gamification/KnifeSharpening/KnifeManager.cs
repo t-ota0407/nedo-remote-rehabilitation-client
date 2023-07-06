@@ -9,6 +9,7 @@ public class KnifeManager : MonoBehaviour
     [SerializeField] private int requiredReachingTimes;
     [SerializeField] private double particleEffectShowingMiliSeconds;
 
+    public bool IsSharpeningFinished { get { return isSharpeningFinished; } }
     private bool isSharpeningFinished;
     private DateTime sharpeningFinishedTime;
 

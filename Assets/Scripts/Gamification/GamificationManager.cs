@@ -19,6 +19,8 @@ public class GamificationManager : MonoBehaviour
     private bool isPlayingGame = false;
     private bool isAscending = true;
 
+    private bool hasKnifeSharpenedDetected = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,23 +36,30 @@ public class GamificationManager : MonoBehaviour
 
             UpdateKnifePosition(progress);
 
-            if (isAscending && progress > 0.95f)
+            if (isAscending && progress > 0.90f)
             {
                 targetKnifeSharpeningSetupManager.KnifeManager.IncrementReachingTimes();
                 isAscending = false;
             }
-            if (!isAscending && progress < 0.05f)
+            if (!isAscending && progress < 0.10f)
             {
                 isAscending = true;
             }
 
-            if (targetKnifeSharpeningSetupManager.KnifeManager.IsParticleEffectFinished)
+            if (!hasKnifeSharpenedDetected && targetKnifeSharpeningSetupManager.KnifeManager.IsSharpeningFinished)
             {
                 // todo: ‘‰Á—Ê‚Í‚Ä‚¢‚Ë‚¢‚ÉÝ’è‚·‚é
                 sharpenedKnife += 1;
                 gameUIManager.UpdateSharpenedKnifeNumber(sharpenedKnife);
 
+                hasKnifeSharpenedDetected = true;
+            }
+
+            if (targetKnifeSharpeningSetupManager.KnifeManager.IsParticleEffectFinished)
+            {
                 targetKnifeSharpeningSetupManager.KnifeManager.InitializeKnife();
+
+                hasKnifeSharpenedDetected = false;
             }
         }
 
@@ -62,7 +71,6 @@ public class GamificationManager : MonoBehaviour
     public void ContinueGame(KnifeSharpeningSetupManager targetSharpeningSetup)
     {
         Quaternion targetRotation = Quaternion.LookRotation(targetSharpeningSetup.transform.position - gameUIManager.transform.position, Vector3.up) * Quaternion.Euler(0, 180, 0);
-        // Quaternion gameUITargetPosture = targetRotation * gameUIManager.transform.rotation;
         gameUIManager.StartRotation(targetRotation);
 
         targetKnifeSharpeningSetupManager = targetSharpeningSetup;
