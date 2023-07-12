@@ -6,7 +6,7 @@ using RootMotion.FinalIK;
 
 public class MyAvatarManager : MonoBehaviour, AvatarManager
 {
-    private const int avatarStateHoldingTimeMiliSeconds = 1500;
+    private const int AVATAR_STATE_HOLDING_MILI_SECONDS = 1500;
 
     [SerializeField] private ControllerInputManager controllerInputManager;
 
@@ -127,7 +127,7 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
 
                 if (controllerInputManager.IsPressedTrigger
                     && isInKnifeSharpeningSetupEnteringArea
-                    && (DateTime.Now - avatarStateUpdatedAt).TotalMilliseconds > avatarStateHoldingTimeMiliSeconds)
+                    && (DateTime.Now - avatarStateUpdatedAt).TotalMilliseconds > AVATAR_STATE_HOLDING_MILI_SECONDS)
                 {
                     xrOrigin.transform.position = targetSharpeningSetupManager.StandingOrigin.transform.position;
                     xrOrigin.transform.localRotation = targetSharpeningSetupManager.transform.rotation * Quaternion.Euler(0, 90, 0);
@@ -142,7 +142,7 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
 
             case AvatarState.KnifeSharpening:
                 if (controllerInputManager.IsPressedTrigger
-                    && (DateTime.Now - avatarStateUpdatedAt).TotalMilliseconds > avatarStateHoldingTimeMiliSeconds)
+                    && (DateTime.Now - avatarStateUpdatedAt).TotalMilliseconds > AVATAR_STATE_HOLDING_MILI_SECONDS)
                 {
                     avatarState = AvatarState.Walking;
                     avatarStateUpdatedAt = DateTime.Now;

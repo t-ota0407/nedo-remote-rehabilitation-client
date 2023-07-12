@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class GamificationManager : MonoBehaviour
 {
+    private const int REACHING_KNIFE_INCREMENT_COEFFICIENT = 3;
+    private const int FACILITY_AUTO_KNIFE_INCREMENT_COEFFICIENT = 1;
+
     private int sharpenedKnife = 0;
     
     [SerializeField] private List<EnvironmentEvent> environmentEvents = new();
@@ -48,8 +51,7 @@ public class GamificationManager : MonoBehaviour
 
             if (!hasKnifeSharpenedDetected && targetKnifeSharpeningSetupManager.KnifeManager.IsSharpeningFinished)
             {
-                // todo: ëùâ¡ó ÇÕÇƒÇ¢ÇÀÇ¢Ç…ê›íËÇ∑ÇÈ
-                sharpenedKnife += 1;
+                sharpenedKnife += REACHING_KNIFE_INCREMENT_COEFFICIENT;
                 gameUIManager.UpdateSharpenedKnifeNumber(sharpenedKnife);
 
                 hasKnifeSharpenedDetected = true;
@@ -62,6 +64,8 @@ public class GamificationManager : MonoBehaviour
                 hasKnifeSharpenedDetected = false;
             }
         }
+
+        CheckSharpenedKnifeAutoIncrement();
 
         CheckEnvironmentEvent();
         CheckLogEvent();
@@ -92,6 +96,11 @@ public class GamificationManager : MonoBehaviour
         GameObject knifeObject = targetKnifeSharpeningSetupManager.KnifeManager.gameObject;
         knifeObject.transform.position = reachingTargetPosition;
         knifeObject.transform.localPosition = knifeObject.transform.localPosition + new Vector3(0, -0.04f, -0.24f);
+    }
+
+    private void CheckSharpenedKnifeAutoIncrement()
+    {
+
     }
 
     private void CheckEnvironmentEvent()
