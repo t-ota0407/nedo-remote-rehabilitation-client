@@ -17,6 +17,12 @@ public class ControllerInputManager : MonoBehaviour
         get { return isPressedButtonB; }
     }
 
+    private bool isPressedTrigger = false;
+    public bool IsPressedTrigger
+    {
+        get { return isPressedTrigger; }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -33,6 +39,7 @@ public class ControllerInputManager : MonoBehaviour
             InputDevice device = rightHandedDevices[0];
             device.TryGetFeatureValue(CommonUsages.primaryButton, out isPressedButtonA);
             device.TryGetFeatureValue(CommonUsages.secondaryButton, out isPressedButtonB);
+            device.TryGetFeatureValue(CommonUsages.triggerButton, out isPressedTrigger);
         }
     }
 }

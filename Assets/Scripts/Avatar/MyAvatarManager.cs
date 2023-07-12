@@ -1,14 +1,13 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
 using RootMotion.FinalIK;
 
 
 public class MyAvatarManager : MonoBehaviour, AvatarManager
 {
+    private const int avatarStateHoldingTimeMiliSeconds = 1500;
+
     [SerializeField] private ControllerInputManager controllerInputManager;
 
     [SerializeField] private GameObject xrOrigin;
@@ -30,6 +29,9 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
     private string uuid;
 
     private AvatarState avatarState;
+    private DateTime avatarStateUpdatedAt;
+
+    private AvatarCalibration avatarCalibration = new();
 
     private VRIK vrik;
 
@@ -54,6 +56,7 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
     {
         UpdateAvatarState();
         UpdateVrikTargetPosture();
+        UpdateReachingCalibration();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -95,9 +98,8 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
             return 0;
         }
 
-        float controllersDistance = Vector3.Distance(leftController.transform.position, rightController.transform.position);
-        float maxPhysicalDistance = 0.5f;
-        float reachingProgress = Mathf.Clamp01(1 - controllersDistance / maxPhysicalDistance);
+        float currentControllersDistance = Vector3.Distance(leftController.transform.position, rightController.transform.position);
+        float reachingProgress = Mathf.Clamp01((avatarCalibration.maxReachedControllerDistance - currentControllersDistance) / (avatarCalibration.maxReachedControllerDistance - avatarCalibration.minReachedControllerDistance));
 
         return reachingProgress;
     }
@@ -123,7 +125,9 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
                     controllerInputManager = transform.GetComponent<ControllerInputManager>();
                 }
 
-                if (controllerInputManager.IsPressedButtonA && isInKnifeSharpeningSetupEnteringArea)
+                if (controllerInputManager.IsPressedTrigger
+                    && isInKnifeSharpeningSetupEnteringArea
+                    && (DateTime.Now - avatarStateUpdatedAt).TotalMilliseconds > avatarStateHoldingTimeMiliSeconds)
                 {
                     xrOrigin.transform.position = targetSharpeningSetupManager.StandingOrigin.transform.position;
                     xrOrigin.transform.localRotation = targetSharpeningSetupManager.transform.rotation * Quaternion.Euler(0, 90, 0);
@@ -131,14 +135,17 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
                     gamificationManager.ContinueGame(targetSharpeningSetupManager);
 
                     avatarState = AvatarState.KnifeSharpening;
+                    avatarStateUpdatedAt = DateTime.Now;
                 }
 
                 break;
 
             case AvatarState.KnifeSharpening:
-                if (controllerInputManager.IsPressedButtonB)
+                if (controllerInputManager.IsPressedTrigger
+                    && (DateTime.Now - avatarStateUpdatedAt).TotalMilliseconds > avatarStateHoldingTimeMiliSeconds)
                 {
                     avatarState = AvatarState.Walking;
+                    avatarStateUpdatedAt = DateTime.Now;
                 }
 
                 break;
@@ -180,6 +187,22 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
                 vrikRightHandTarget.transform.rotation = targetSharpeningSetupManager.transform.rotation * Quaternion.Euler(0, 0, 180f);
 
                 break;
+        }
+    }
+
+    private void UpdateReachingCalibration()
+    {
+        if (avatarState == AvatarState.KnifeSharpening)
+        {
+            if (controllerInputManager.IsPressedButtonA)
+            {
+                avatarCalibration.maxReachedControllerDistance = Vector3.Distance(leftController.transform.position, rightController.transform.position);
+            }
+
+            if (controllerInputManager.IsPressedButtonB)
+            {
+                avatarCalibration.minReachedControllerDistance = Vector3.Distance(leftController.transform.position, rightController.transform.position);
+            }
         }
     }
 

@@ -36,12 +36,12 @@ public class GamificationManager : MonoBehaviour
 
             UpdateKnifePosition(progress);
 
-            if (isAscending && progress > 0.90f)
+            if (isAscending && progress > 0.95f)
             {
                 targetKnifeSharpeningSetupManager.KnifeManager.IncrementReachingTimes();
                 isAscending = false;
             }
-            if (!isAscending && progress < 0.10f)
+            if (!isAscending && progress < 0.05f)
             {
                 isAscending = true;
             }
