@@ -54,6 +54,34 @@ public class GameUIManager : MonoBehaviour
         sharpenedKnifeNumberText.text = sharpenedKnife.ToString();
     }
 
+    public void UpdateFacilityCard(FacilityType facilityType, int amount)
+    {
+        switch (facilityType)
+        {
+            case FacilityType.Artisan:
+                artisanCardManager.UpdateCard(amount);
+                break;
+            case FacilityType.AutoSharpener:
+                autoSharpenerCardManager.UpdateCard(amount);
+                break;
+            case FacilityType.Mine:
+                mineCardManager.UpdateCard(amount);
+                break;
+            case FacilityType.Factory:
+                factoryCardManager.UpdateCard(amount);
+                break;
+            case FacilityType.Bank:
+                bankCardManager.UpdateCard(amount);
+                break;
+            case FacilityType.Alchemist:
+                alchemistCardManager.UpdateCard(amount);
+                break;
+            case FacilityType.Wizard:
+                wizardCardManager.UpdateCard(amount);
+                break;
+        }
+    }
+
     public void UpdateLogText(string message)
     {
         int logTextLength = message.Length;

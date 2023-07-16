@@ -18,6 +18,8 @@ public class GamificationManager : MonoBehaviour
 
     [SerializeField] private GameUIManager gameUIManager;
 
+    private readonly List<ReleasedFacility> releacedFacilities = new();
+
     private KnifeSharpeningSetupManager targetKnifeSharpeningSetupManager;
     private bool isPlayingGame = false;
     private bool isAscending = true;
@@ -27,7 +29,7 @@ public class GamificationManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -111,14 +113,24 @@ public class GamificationManager : MonoBehaviour
 
         foreach (EnvironmentEvent environmentEvent in environmentEvents)
         {
-            if (!environmentEvent.isApplied)
+            if (environmentEvent.isApplied)
             {
                 continue;
             }
 
             if (environmentEvent.sharpenedKnifeForTrigger <= sharpenedKnife)
             {
-                // todo:イベントの実行
+                switch (environmentEvent.eventType)
+                {
+                    case EnvironmentEventType.Appear:
+                        environmentEvent.targetObject.SetActive(true);
+                        break;
+
+                    case EnvironmentEventType.Disappear:
+                        environmentEvent.targetObject.SetActive(false);
+                        break;
+                }
+                environmentEvent.isApplied = true;
             }
             else
             {
@@ -135,7 +147,7 @@ public class GamificationManager : MonoBehaviour
 
         foreach(LogEvent logEvent in logEvents)
         {
-            if (!logEvent.isApplied)
+            if (logEvent.isApplied)
             {
                 continue;
             }
@@ -143,6 +155,7 @@ public class GamificationManager : MonoBehaviour
             if (logEvent.sharpenedKnifeForTrigger <= sharpenedKnife)
             {
                 // todo:イベントの実行
+                
             }
             else
             {
@@ -159,14 +172,26 @@ public class GamificationManager : MonoBehaviour
 
         foreach(FacilityEvent facilityEvent in facilityEvents)
         {
-            if (!facilityEvent.isApplied)
+            if (facilityEvent.isApplied)
             {
                 continue;
             }
 
             if (facilityEvent.sharpenedKnifeForTrigger <= sharpenedKnife)
             {
-                // todo:イベントの実行
+                ReleasedFacility targetReleasedFacility = releacedFacilities.Find(item => item.facilityType == facilityEvent.facilityType);
+
+                if (targetReleasedFacility == null)
+                {
+                    targetReleasedFacility = new ReleasedFacility(facilityEvent.facilityType, 0);
+                    releacedFacilities.Add(targetReleasedFacility);
+                }
+
+                targetReleasedFacility.amount += 1;
+
+                gameUIManager.UpdateFacilityCard(targetReleasedFacility.facilityType, targetReleasedFacility.amount);
+
+                facilityEvent.isApplied = true;
             }
             else
             {

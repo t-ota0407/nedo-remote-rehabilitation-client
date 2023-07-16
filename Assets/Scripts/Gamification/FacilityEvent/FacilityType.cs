@@ -1,4 +1,4 @@
-public enum FacilityEventType
+public enum FacilityType
 {
     Artisan,
     AutoSharpener,

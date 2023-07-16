@@ -4,7 +4,7 @@ using UnityEngine;
 [Serializable]
 public class FacilityEvent
 {
-    public FacilityEventType eventType;
+    public FacilityType facilityType;
     public GameObject prefabObject;
     public int sharpenedKnifeForTrigger;
     public bool isApplied;
