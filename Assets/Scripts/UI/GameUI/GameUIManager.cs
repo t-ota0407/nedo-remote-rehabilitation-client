@@ -16,6 +16,7 @@ public class GameUIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI thirdLineLogText;
     [SerializeField] private TextMeshProUGUI fourthLineLogText;
     [SerializeField] private TextMeshProUGUI fifthLineLogText;
+    [SerializeField] private TextMeshProUGUI sixthLineLogText;
 
     [SerializeField] private FacilityCardManager artisanCardManager;
     [SerializeField] private FacilityCardManager autoSharpenerCardManager;
@@ -31,7 +32,12 @@ public class GameUIManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        firstLineLogText.text = "";
+        secondLineLogText.text = "";
+        thirdLineLogText.text = "";
+        fourthLineLogText.text = "";
+        fifthLineLogText.text = "";
+        sixthLineLogText.text = "";
     }
 
     // Update is called once per frame
@@ -93,7 +99,8 @@ public class GameUIManager : MonoBehaviour
             secondLineLogText.text = thirdLineLogText.text;
             thirdLineLogText.text = fourthLineLogText.text;
             fourthLineLogText.text = fifthLineLogText.text;
-            fifthLineLogText.text = message;
+            fifthLineLogText.text = sixthLineLogText.text;
+            sixthLineLogText.text = message;
         }
         else if (logTextLength <= LogLineMaxLength * 2)
         {
@@ -103,8 +110,9 @@ public class GameUIManager : MonoBehaviour
             firstLineLogText.text = thirdLineLogText.text;
             secondLineLogText.text = fourthLineLogText.text;
             thirdLineLogText.text = fifthLineLogText.text;
-            fourthLineLogText.text = newLine1;
-            fifthLineLogText.text = newLine2;
+            fourthLineLogText.text = sixthLineLogText.text;
+            fifthLineLogText.text = newLine1;
+            sixthLineLogText.text = newLine2;
         }
     }
 }

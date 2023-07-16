@@ -154,8 +154,8 @@ public class GamificationManager : MonoBehaviour
 
             if (logEvent.sharpenedKnifeForTrigger <= sharpenedKnife)
             {
-                // todo:イベントの実行
-                
+                gameUIManager.UpdateLogText(logEvent.message);
+                logEvent.isApplied = true;
             }
             else
             {
