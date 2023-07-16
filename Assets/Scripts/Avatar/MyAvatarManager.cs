@@ -33,6 +33,8 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
 
     private AvatarCalibration avatarCalibration = new();
 
+    private MSRBAvatarConfiguration msrbAvatarConfiguration;
+
     private VRIK vrik;
 
     private bool isInKnifeSharpeningSetupEnteringArea = false;
@@ -56,7 +58,7 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
     {
         UpdateAvatarState();
         UpdateVrikTargetPosture();
-        UpdateReachingCalibration();
+        CheckAvatarCalibration();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -113,6 +115,7 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
         vrik.solver.spine.headTarget = vrikHeadTarget.transform;
         vrik.solver.leftArm.target = vrikLeftHandTarget.transform;
         vrik.solver.rightArm.target = vrikRightHandTarget.transform;
+        msrbAvatarConfiguration = avatarModel.GetComponent<MSRBAvatarConfiguration>();
     }
 
     private void UpdateAvatarState()
@@ -190,19 +193,33 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
         }
     }
 
-    private void UpdateReachingCalibration()
+    private void CheckAvatarCalibration()
     {
-        if (avatarState == AvatarState.KnifeSharpening)
+        switch (avatarState)
         {
-            if (controllerInputManager.IsPressedButtonA)
-            {
-                avatarCalibration.maxReachedControllerDistance = Vector3.Distance(leftController.transform.position, rightController.transform.position);
-            }
+            case AvatarState.Walking:
+                if (controllerInputManager.IsPressedButtonA)
+                {
+                    avatarCalibration.seatedHeadHeight = hmd.transform.localPosition.y;
 
-            if (controllerInputManager.IsPressedButtonB)
-            {
-                avatarCalibration.minReachedControllerDistance = Vector3.Distance(leftController.transform.position, rightController.transform.position);
-            }
+                    float offsetHeight = msrbAvatarConfiguration.StandardCameraHeight - avatarCalibration.seatedHeadHeight;
+                    transform.localPosition = new Vector3(0, offsetHeight, 0);
+                }
+
+                break;
+
+            case AvatarState.KnifeSharpening:
+                if (controllerInputManager.IsPressedButtonA)
+                {
+                    avatarCalibration.maxReachedControllerDistance = Vector3.Distance(leftController.transform.position, rightController.transform.position);
+                }
+
+                if (controllerInputManager.IsPressedButtonB)
+                {
+                    avatarCalibration.minReachedControllerDistance = Vector3.Distance(leftController.transform.position, rightController.transform.position);
+                }
+
+                break;
         }
     }
 

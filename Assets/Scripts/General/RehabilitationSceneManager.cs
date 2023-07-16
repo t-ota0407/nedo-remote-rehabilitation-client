@@ -21,7 +21,7 @@ public class RehabilitationSceneManager : MonoBehaviour
         fadeManager = fadeCanvas.GetComponent<FadeManager>();
         loadingProgressManager = loadingCanvas.GetComponent<LoadingProgressManager>();
         myAvatarManager = myAvatar.GetComponent<MyAvatarManager>();
-        myAvatarManager.InitializeAvatar("Prefabs/Avatars/Female_Adult_01");
+        myAvatarManager.InitializeAvatar("Prefabs/Avatars/Female_Adult_01 Variant");
 
         fadeManager.StartFadeIn();
     }
