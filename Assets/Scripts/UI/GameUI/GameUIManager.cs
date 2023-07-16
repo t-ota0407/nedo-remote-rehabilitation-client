@@ -9,8 +9,8 @@ public class GameUIManager : MonoBehaviour
     private const int LogLineMaxLength = 21;
     private const float CanvasRotationSpeed = 1.5f;
 
-    [SerializeField] private TextMeshProUGUI sharpenedKnifeNumberText;
-    [SerializeField] private TextMeshProUGUI knifePerSecondNumberText;
+    [SerializeField] private TextMeshProUGUI sharpenedKnifeText;
+    [SerializeField] private TextMeshProUGUI autoIncrementSharpenedknifePerSecondText;
     [SerializeField] private TextMeshProUGUI firstLineLogText;
     [SerializeField] private TextMeshProUGUI secondLineLogText;
     [SerializeField] private TextMeshProUGUI thirdLineLogText;
@@ -55,10 +55,16 @@ public class GameUIManager : MonoBehaviour
         rotationTargetPosture = targetPosture;
     }
 
-    public void UpdateSharpenedKnifeNumber(int sharpenedKnife)
+    public void UpdateSharpenedKnife(int sharpenedKnife)
     {
-        sharpenedKnifeNumberText.text = sharpenedKnife.ToString();
+        sharpenedKnifeText.text = sharpenedKnife.ToString();
     }
+
+    public void UpdateAutoIncrementSharpenedKnifePerSecond(float autoIncrementSharpenedKnife)
+    {
+        autoIncrementSharpenedknifePerSecondText.text = autoIncrementSharpenedKnife.ToString("F1");
+    }
+
 
     public void UpdateFacilityCard(FacilityType facilityType, int amount)
     {

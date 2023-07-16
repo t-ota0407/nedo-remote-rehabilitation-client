@@ -6,13 +6,18 @@ using UnityEngine;
 public class GamificationManager : MonoBehaviour
 {
     private const int REACHING_KNIFE_INCREMENT_COEFFICIENT = 3;
-    private const int FACILITY_AUTO_KNIFE_INCREMENT_COEFFICIENT = 1;
 
     private int sharpenedKnife = 0;
+    private float autoIncrementSharpenedKnifePerSecond = 0;
+
+    private DateTime lastAutoIncrementedAt = new();
+    private bool isLastAutoIncrementEvenNumber = true;
     
     [SerializeField] private List<EnvironmentEvent> environmentEvents = new();
     [SerializeField] private List<LogEvent> logEvents = new();
     [SerializeField] private List<FacilityEvent> facilityEvents = new();
+
+    [SerializeField] private List<FacilityAutoIncrementAmount> facilityAutoIncrementAmounts = new();
 
     [SerializeField] private MyAvatarManager myAvatarManager;
 
@@ -54,7 +59,7 @@ public class GamificationManager : MonoBehaviour
             if (!hasKnifeSharpenedDetected && targetKnifeSharpeningSetupManager.KnifeManager.IsSharpeningFinished)
             {
                 sharpenedKnife += REACHING_KNIFE_INCREMENT_COEFFICIENT;
-                gameUIManager.UpdateSharpenedKnifeNumber(sharpenedKnife);
+                gameUIManager.UpdateSharpenedKnife(sharpenedKnife);
 
                 hasKnifeSharpenedDetected = true;
             }
@@ -102,7 +107,27 @@ public class GamificationManager : MonoBehaviour
 
     private void CheckSharpenedKnifeAutoIncrement()
     {
+        DateTime now = DateTime.Now;
+        if ((now - lastAutoIncrementedAt).TotalMilliseconds > 1000)
+        {
+            
+            if (isLastAutoIncrementEvenNumber)
+            {
+                int incrementAmount = Mathf.CeilToInt(autoIncrementSharpenedKnifePerSecond);
+                sharpenedKnife += incrementAmount;
+                isLastAutoIncrementEvenNumber = false;
+            }
+            else
+            {
+                int incrementAmount = Mathf.FloorToInt(autoIncrementSharpenedKnifePerSecond);
+                sharpenedKnife += incrementAmount;
+                isLastAutoIncrementEvenNumber = true;
+            }
 
+            gameUIManager.UpdateSharpenedKnife(sharpenedKnife);
+
+            lastAutoIncrementedAt = now;
+        }
     }
 
     private void CheckEnvironmentEvent()
@@ -190,6 +215,11 @@ public class GamificationManager : MonoBehaviour
                 targetReleasedFacility.amount += 1;
 
                 gameUIManager.UpdateFacilityCard(targetReleasedFacility.facilityType, targetReleasedFacility.amount);
+
+                FacilityAutoIncrementAmount targetFacilityAutoIncrementAmount = facilityAutoIncrementAmounts.Find(item => item.facilityType == facilityEvent.facilityType);
+                autoIncrementSharpenedKnifePerSecond += targetFacilityAutoIncrementAmount.autoIncrementAmount;
+
+                gameUIManager.UpdateAutoIncrementSharpenedKnifePerSecond(autoIncrementSharpenedKnifePerSecond);
 
                 facilityEvent.isApplied = true;
             }
