@@ -23,6 +23,8 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
     [SerializeField] private GameObject vrikHeadTarget;
     [SerializeField] private GameObject vrikLeftHandTarget;
     [SerializeField] private GameObject vrikRightHandTarget;
+    [SerializeField] private GameObject vrikLeftRegTarget;
+    [SerializeField] private GameObject vrikRightRegTarget;
 
     [SerializeField] private GamificationManager gamificationManager;
 
@@ -122,7 +124,7 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
     {
         switch (avatarState)
         {
-            case AvatarState.Walking:
+            case AvatarState.Walking: // Walking => KnifeSharpening
                 if (controllerInputManager == null)
                 {
                     controllerInputManager = transform.GetComponent<ControllerInputManager>();
@@ -137,16 +139,26 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
 
                     gamificationManager.ContinueGame(targetSharpeningSetupManager);
 
+                    vrik.solver.leftLeg.target = vrikLeftRegTarget.transform;
+                    vrik.solver.leftLeg.positionWeight = 0.9f;
+                    vrik.solver.rightLeg.target = vrikRightRegTarget.transform;
+                    vrik.solver.rightLeg.positionWeight = 0.9f;
+
                     avatarState = AvatarState.KnifeSharpening;
                     avatarStateUpdatedAt = DateTime.Now;
                 }
 
                 break;
 
-            case AvatarState.KnifeSharpening:
+            case AvatarState.KnifeSharpening: // KnifeSharpening => Walking
                 if (controllerInputManager.IsPressedTrigger
                     && (DateTime.Now - avatarStateUpdatedAt).TotalMilliseconds > AVATAR_STATE_HOLDING_MILI_SECONDS)
                 {
+                    vrik.solver.leftLeg.target = null;
+                    vrik.solver.leftLeg.positionWeight = 0;
+                    vrik.solver.rightLeg.target = null;
+                    vrik.solver.rightLeg.positionWeight = 0;
+
                     avatarState = AvatarState.Walking;
                     avatarStateUpdatedAt = DateTime.Now;
                 }
@@ -188,6 +200,12 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
 
                 vrikLeftHandTarget.transform.rotation = targetSharpeningSetupManager.transform.rotation * Quaternion.Euler(0, 0, 180f);
                 vrikRightHandTarget.transform.rotation = targetSharpeningSetupManager.transform.rotation * Quaternion.Euler(0, 0, 180f);
+
+                vrikLeftRegTarget.transform.position = targetSharpeningSetupManager.StandingOrigin.transform.position;
+                vrikRightRegTarget.transform.position = targetSharpeningSetupManager.StandingOrigin.transform.position;
+
+                vrikLeftRegTarget.transform.localPosition = vrikLeftRegTarget.transform.localPosition + new Vector3(0.15f, 0, 0);
+                vrikRightRegTarget.transform.localPosition = vrikRightRegTarget.transform.localPosition + new Vector3(-0.15f, 0, 0);
 
                 break;
         }
