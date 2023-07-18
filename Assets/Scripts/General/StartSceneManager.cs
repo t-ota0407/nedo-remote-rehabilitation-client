@@ -17,9 +17,6 @@ public class StartSceneManager : MonoBehaviour
 
     private List<TaskProgress<StartSceneTask>> taskProgressList;
 
-    private bool isCommunicating = false;
-    private bool isLoadingNextScene = false;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -99,10 +96,10 @@ public class StartSceneManager : MonoBehaviour
 
     private void SaveUserUuidAndToken(string userUuid, string token)
     {
-        Debug.Log(userUuid);
-        Debug.Log(token);
+        SingletonDatabase singletonDatabase = SingletonDatabase.Instance;
+        singletonDatabase.myUserUuid = userUuid;
+        singletonDatabase.myToken = token;
     }
-
 
     private IEnumerator LoadSceneWithIndicator()
     {
