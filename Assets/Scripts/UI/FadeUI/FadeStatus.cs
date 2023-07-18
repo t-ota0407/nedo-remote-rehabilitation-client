@@ -1,6 +1,7 @@
 public enum FadeStatus
 {
-    Idle,
-    Fading,
-    Finished,
+    FADED_OUT,
+    FADING_OUT,
+    FADING_IN,
+    FADED_IN,
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,41 +10,66 @@ public class StartSceneManager : MonoBehaviour
     private const float sceneTransitionMinimumLoadingProgress = 0.89f;
 
     [Header("Reference")]
-    [SerializeField] private GameObject startUI;
-    [SerializeField] private GameObject fadeCanvas;
-    [SerializeField] private GameObject loadingCanvas;
+    [SerializeField] private StartUIManager startUIManager;
+    [SerializeField] private FadeManager fadeManager;
+    [SerializeField] private LoadingProgressManager loadingProgressManager;
+    [SerializeField] private HTTPCommunicationManager httpCommunicationManager;
 
-    private StartUIManager startUIManager;
-    private FadeManager fadeManager;
-    private LoadingProgressManager loadingProgressManager;
+    private List<TaskProgress<StartSceneTask>> taskProgressList;
 
+    private bool isCommunicating = false;
     private bool isLoadingNextScene = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        startUIManager = startUI.GetComponent<StartUIManager>();
-        fadeManager = fadeCanvas.GetComponent<FadeManager>();
-        loadingProgressManager = loadingCanvas.GetComponent<LoadingProgressManager>();
+        taskProgressList = TaskProgress<StartSceneTask>.GenerateTaskProgressList();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (startUIManager.IsClickedSimpleRehabilitationStartButton)
-        {
-            if (fadeManager.FadeStatus == FadeStatus.Idle)
-            {
-                fadeManager.StartFadeOut();
-                loadingProgressManager.Display();
-            }
+        TaskProgress<StartSceneTask> currentTaskProgress = TaskProgress<StartSceneTask>.GetCurrentTaskProgress(taskProgressList);
 
-            if (fadeManager.FadeStatus == FadeStatus.Finished && !isLoadingNextScene)
-            {
-                StartCoroutine(LoadSceneWithIndicator());
-                isLoadingNextScene = true;
-            }
+        switch (currentTaskProgress.task)
+        {
+            case StartSceneTask.HTTP_COMMUNICATION:
+                if (currentTaskProgress.progress == Progress.PENDING)
+                {
+                    if ((startUIManager.IsClickedSimpleRehabilitationStartButton))
+                    {
+                        StartSignupOrSignin(currentTaskProgress);
+                        currentTaskProgress.StartedTask();
+                    }
+                }
+                break;
+
+            case StartSceneTask.FADING_OUT:
+                if (currentTaskProgress.progress == Progress.PENDING)
+                {
+                    fadeManager.StartFadeOut();
+                    loadingProgressManager.Display();
+                    currentTaskProgress.StartedTask();
+
+                }
+                else if (currentTaskProgress.progress == Progress.DOING)
+                {
+                    if (fadeManager.FadeStatus == FadeStatus.FADED_OUT)
+                    {
+                        currentTaskProgress.FinishedTask();
+                    }
+                }
+                break;
+
+            case StartSceneTask.SCENE_LOADING:
+                if (currentTaskProgress.progress == Progress.PENDING)
+                {
+                    StartCoroutine(LoadSceneWithIndicator());
+                    currentTaskProgress.StartedTask();
+                }
+                break;
         }
+
 
         if (startUIManager.IsClickedGamificationRehabilitationStartButton)
         {
@@ -55,6 +81,28 @@ public class StartSceneManager : MonoBehaviour
 
         }
     }
+
+    private void StartSignupOrSignin(TaskProgress<StartSceneTask> taskProgress)
+    {
+        string userName = startUIManager.UserNameInputFieldText;
+        string password = startUIManager.PasswordInputFieldText;
+
+        if (startUIManager.IsUserCreation)
+        {
+            StartCoroutine(httpCommunicationManager.PostUserSignup(userName, password, SaveUserUuidAndToken, taskProgress.FinishedTask));
+        }
+        else
+        {
+            StartCoroutine(httpCommunicationManager.PostUserSignin(userName, password, SaveUserUuidAndToken, taskProgress.FinishedTask));
+        }
+    }
+
+    private void SaveUserUuidAndToken(string userUuid, string token)
+    {
+        Debug.Log(userUuid);
+        Debug.Log(token);
+    }
+
 
     private IEnumerator LoadSceneWithIndicator()
     {

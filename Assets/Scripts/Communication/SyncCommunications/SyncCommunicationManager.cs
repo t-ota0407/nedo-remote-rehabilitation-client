@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CommunicationManager : MonoBehaviour
+public class SyncCommunicationManager : MonoBehaviour
 {
     [SerializeField] private string serverIP;
     [SerializeField] private int serverHttpPort;
@@ -54,6 +54,16 @@ public class CommunicationManager : MonoBehaviour
         posture.position = new Vector3();
         posture.rotation = new Vector3();
         return posture;
+    }
+
+    public void PostUserSignUp()
+    {
+
+    }
+
+    public void PostUserSignIn()
+    {
+
     }
 
     public void StartSyncCommunication()

@@ -13,6 +13,7 @@ public class StartUIManager : MonoBehaviour
 
     [SerializeField] private TMP_InputField userNameInputField;
     [SerializeField] private TMP_InputField passwordInputField;
+    [SerializeField] private Toggle userCreationToggle;
 
     [SerializeField] private KeyboardManager keyboardManager;
 
@@ -24,6 +25,12 @@ public class StartUIManager : MonoBehaviour
 
     public bool IsClickedCommunicationRehabilitationStartButton { get { return isClickedCommunicationRehabilitationStartButton; } }
     private bool isClickedCommunicationRehabilitationStartButton;
+
+    public bool IsUserCreation { get { return userCreationToggle.isOn; } }
+
+    public string UserNameInputFieldText { get { return userNameInputField.text; } }
+
+    public string PasswordInputFieldText { get { return passwordInputField.text; } }
 
     private TMP_InputField targetInputField;
 

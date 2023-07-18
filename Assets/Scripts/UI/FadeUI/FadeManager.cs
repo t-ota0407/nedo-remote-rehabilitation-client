@@ -6,25 +6,39 @@ using UnityEngine.UI;
 
 public class FadeManager : MonoBehaviour
 {
+    private const float defaultFadeDuration = 2;
+    
+    [SerializeField] private FadeStatus fadeStatus = FadeStatus.FADED_IN;
     [SerializeField] private Image fadeImage;
 
-    private const float defaultFadeDuration = 2;
+    public FadeStatus FadeStatus { get { return fadeStatus; } }
 
-    private FadeStatus fadeStatus = FadeStatus.Idle;
-    public FadeStatus FadeStatus
+    void Start()
     {
-        get { return fadeStatus; }
+        if (fadeStatus == FadeStatus.FADING_OUT || fadeStatus == FadeStatus.FADING_IN)
+        {
+            fadeStatus = FadeStatus.FADED_IN;
+        }
+
+        if (fadeStatus == FadeStatus.FADED_IN)
+        {
+            StartFadeIn(0.001f);
+        }
+        else if (fadeStatus == FadeStatus.FADED_OUT)
+        {
+            StartFadeOut(0.001f);
+        }
     }
 
     public void StartFadeOut(float fadeDuration = defaultFadeDuration)
     {
-        fadeStatus = FadeStatus.Fading;
+        fadeStatus = FadeStatus.FADING_OUT;
         StartCoroutine(FadeOut(fadeDuration));
     }
 
     public void StartFadeIn(float fadeDuration = defaultFadeDuration)
     {
-        fadeStatus = FadeStatus.Fading;
+        fadeStatus = FadeStatus.FADING_IN;
         StartCoroutine(FadeIn(fadeDuration));
     }
 
@@ -40,7 +54,7 @@ public class FadeManager : MonoBehaviour
             yield return null;
         }
 
-        fadeStatus = FadeStatus.Finished;
+        fadeStatus = FadeStatus.FADED_OUT;
     }
 
     private IEnumerator FadeIn(float fadeDuration)
@@ -55,6 +69,6 @@ public class FadeManager : MonoBehaviour
             yield return null;
         }
 
-        fadeStatus = FadeStatus.Finished;
+        fadeStatus = FadeStatus.FADED_IN;
     }
 }

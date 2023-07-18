@@ -11,7 +11,7 @@ public class RehabilitationSceneManager : MonoBehaviour
     [SerializeField] private GameObject loadingCanvas;
     [SerializeField] private GameObject myAvatar;
 
-    [SerializeField] private CommunicationManager communicationManager;
+    [SerializeField] private SyncCommunicationManager syncCommunicationManager;
 
     private FadeManager fadeManager;
     private LoadingProgressManager loadingProgressManager;
@@ -33,7 +33,7 @@ public class RehabilitationSceneManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            communicationManager.StartSyncCommunication();
+            syncCommunicationManager.StartSyncCommunication();
         }
     }
 }
