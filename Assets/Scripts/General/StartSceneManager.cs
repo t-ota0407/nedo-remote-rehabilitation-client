@@ -30,7 +30,7 @@ public class StartSceneManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (startUIManager.IsPushedSoloPlayButton)
+        if (startUIManager.IsClickedSimpleRehabilitationStartButton)
         {
             if (fadeManager.FadeStatus == FadeStatus.Idle)
             {
@@ -45,7 +45,12 @@ public class StartSceneManager : MonoBehaviour
             }
         }
 
-        if (startUIManager.IsPushedMultiPlayButton)
+        if (startUIManager.IsClickedGamificationRehabilitationStartButton)
+        {
+
+        }
+
+        if (startUIManager.IsClickedCommunicationRehabilitationStartButton)
         {
 
         }

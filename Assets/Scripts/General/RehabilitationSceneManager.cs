@@ -11,6 +11,8 @@ public class RehabilitationSceneManager : MonoBehaviour
     [SerializeField] private GameObject loadingCanvas;
     [SerializeField] private GameObject myAvatar;
 
+    [SerializeField] private CommunicationManager communicationManager;
+
     private FadeManager fadeManager;
     private LoadingProgressManager loadingProgressManager;
     private MyAvatarManager myAvatarManager;
@@ -29,6 +31,9 @@ public class RehabilitationSceneManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            communicationManager.StartSyncCommunication();
+        }
     }
 }
