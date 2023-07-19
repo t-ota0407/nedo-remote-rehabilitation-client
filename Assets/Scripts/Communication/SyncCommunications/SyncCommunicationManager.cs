@@ -56,16 +56,6 @@ public class SyncCommunicationManager : MonoBehaviour
         return posture;
     }
 
-    public void PostUserSignUp()
-    {
-
-    }
-
-    public void PostUserSignIn()
-    {
-
-    }
-
     public void StartSyncCommunication()
     {
         isSyncCommunicating = true;
