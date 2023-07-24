@@ -1,14 +1,20 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
 using UnityEngine;
 
 public class SyncCommunicationManager : MonoBehaviour
 {
     [SerializeField] private string serverIP;
-    [SerializeField] private int serverHttpPort;
     [SerializeField] private int serverUdpPort;
     [SerializeField] private int clientUdpPort;
+
+    [SerializeField] private MyAvatarManager myAvatarManager;
+    [SerializeField] private OthersAvatarManager othersAvatarManager;
 
     private bool isSyncCommunicating = false;
 
@@ -38,26 +44,45 @@ public class SyncCommunicationManager : MonoBehaviour
             UDPUploadUser udpUploadUser = new UDPUploadUser();
             udpUploadUser.timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.ff");
             udpUploadUser.user = new SyncCommunicationUser();
-            udpUploadUser.user.userUuid = "";
+            udpUploadUser.user.userUuid = SingletonDatabase.Instance.myUserUuid;
             udpUploadUser.user.rehabilitationCondition = "SIMPLE";
-            udpUploadUser.user.headPosture = C();
-            udpUploadUser.user.leftHandPosture = C();
-            udpUploadUser.user.rightHandPosture = C();
+            udpUploadUser.user.headPosture = myAvatarManager.HeadPosture;
+            udpUploadUser.user.leftHandPosture = myAvatarManager.LeftHandPosture;
+            udpUploadUser.user.rightHandPosture = myAvatarManager.RightHandPosture;
             udpCommunicationManager.Send(udpUploadUser);
-            Debug.Log("Send");
         }
-    }
-
-    private Posture C()
-    {
-        Posture posture = new Posture();
-        posture.position = new Vector3();
-        posture.rotation = new Vector3();
-        return posture;
     }
 
     public void StartSyncCommunication()
     {
         isSyncCommunicating = true;
+
+        udpCommunicationManager.Listen(OnUDPReceived);
+    }
+
+    private void OnUDPReceived(IAsyncResult result)
+    {
+        UdpClient receivingUdpClient = (UdpClient)result.AsyncState;
+        IPEndPoint ipEndPoint = null;
+
+        byte[] getByte = receivingUdpClient.EndReceive(result, ref ipEndPoint);
+        string message = Encoding.UTF8.GetString(getByte);
+
+        Debug.Log(message);
+
+        try
+        {
+            UDPDownloadUser udpDownloadUserData = JsonUtility.FromJson<UDPDownloadUser>(message);
+            Debug.Log("parse ok");
+
+            othersAvatarManager.EnqueueOthersAvatarUpdate(udpDownloadUserData);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("UDP datagram parse error: " + e.Message);
+            Debug.LogError(e.StackTrace);
+        }
+
+        receivingUdpClient.BeginReceive(OnUDPReceived, receivingUdpClient);
     }
 }

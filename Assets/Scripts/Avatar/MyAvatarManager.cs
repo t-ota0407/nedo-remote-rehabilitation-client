@@ -4,7 +4,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 using RootMotion.FinalIK;
 
 
-public class MyAvatarManager : MonoBehaviour, AvatarManager
+public class MyAvatarManager : MonoBehaviour
 {
     private const int AVATAR_STATE_HOLDING_MILI_SECONDS = 1500;
 
@@ -80,19 +80,18 @@ public class MyAvatarManager : MonoBehaviour, AvatarManager
         }
     }
 
-    public string UUID()
-    {
-        return uuid;
-    }
+    public Posture HeadPosture { get { return GetGameObjectPosture(vrikHeadTarget); } }
+    public Posture LeftHandPosture { get { return GetGameObjectPosture(vrikLeftHandTarget); } }
+    public Posture RightHandPosture { get { return GetGameObjectPosture(vrikRightHandTarget); } }
+    public Posture LeftRegPosture { get { return GetGameObjectPosture(vrikLeftRegTarget); } }
+    public Posture RightRegPosture { get { return GetGameObjectPosture(vrikRightRegTarget); } }
 
-    public Vector3 HeadPosition()
+    private Posture GetGameObjectPosture(GameObject gameObject)
     {
-        return hmd.transform.position;
-    }
-
-    public Vector3 HeadRotation()
-    {
-        return hmd.transform.rotation.eulerAngles;
+        Posture posture = new();
+        posture.position = gameObject.transform.position;
+        posture.rotation = gameObject.transform.rotation.eulerAngles;
+        return posture;
     }
 
     public float ReachingProgress()

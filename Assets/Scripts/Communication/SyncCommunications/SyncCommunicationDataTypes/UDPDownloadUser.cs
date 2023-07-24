@@ -6,6 +6,6 @@ using UnityEngine;
 [Serializable]
 public class UDPDownloadUser
 {
-    public DateTime timestamp;
+    public string timestamp;
     public SyncCommunicationUser user;
 }

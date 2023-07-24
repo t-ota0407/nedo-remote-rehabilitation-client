@@ -35,33 +35,36 @@ public class UDPCommunicationManager
         udpClient.Send(message, message.Length);
     }
 
-    public void Listen()
+    public void Listen(Action<IAsyncResult> OnReceived)
     {
         udpClient.BeginReceive(new AsyncCallback(OnReceived), udpClient);
         isListening = true;
+        Debug.Log("listen");
     }
 
-    private void OnReceived(IAsyncResult result)
-    {
-        UdpClient receivingUdpClient = (UdpClient)result.AsyncState;
-        IPEndPoint ipEndPoint = null;
+    //private void OnReceived(IAsyncResult result)
+    //{
+    //    UdpClient receivingUdpClient = (UdpClient)result.AsyncState;
+    //    IPEndPoint ipEndPoint = null;
 
-        byte[] getByte = receivingUdpClient.EndReceive(result, ref ipEndPoint);
-        string message = Encoding.UTF8.GetString(getByte);
+    //    byte[] getByte = receivingUdpClient.EndReceive(result, ref ipEndPoint);
+    //    string message = Encoding.UTF8.GetString(getByte);
 
-        try
-        {
-            UDPDownloadUser udpDownloadUserData = JsonUtility.FromJson<UDPDownloadUser>(message);
+    //    Debug.Log(message);
 
-            // todo: データを使って同期処理をやる
-            Debug.Log(udpDownloadUserData.timestamp);
-        }
-        catch(Exception e)
-        {
-            Debug.LogError("UDP datagram parse error: " + e.Message);
-        }
+    //    try
+    //    {
+    //        UDPDownloadUser udpDownloadUserData = JsonUtility.FromJson<UDPDownloadUser>(message);
 
-        receivingUdpClient.BeginReceive(OnReceived, receivingUdpClient);
-    }
+    //        // todo: データを使って同期処理をやる
+    //        Debug.Log(udpDownloadUserData.timestamp);
+    //    }
+    //    catch(Exception e)
+    //    {
+    //        Debug.LogError("UDP datagram parse error: " + e.Message);
+    //    }
+
+    //    receivingUdpClient.BeginReceive(OnReceived, receivingUdpClient);
+    //}
 }
 
