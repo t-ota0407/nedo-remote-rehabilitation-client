@@ -45,6 +45,7 @@ public class SyncCommunicationManager : MonoBehaviour
             udpUploadUser.timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.ff");
             udpUploadUser.user = new SyncCommunicationUser();
             udpUploadUser.user.userUuid = SingletonDatabase.Instance.myUserUuid;
+            udpUploadUser.user.userName = SingletonDatabase.Instance.myUserName;
             udpUploadUser.user.rehabilitationCondition = "SIMPLE";
             udpUploadUser.user.headPosture = myAvatarManager.HeadPosture;
             udpUploadUser.user.leftHandPosture = myAvatarManager.LeftHandPosture;

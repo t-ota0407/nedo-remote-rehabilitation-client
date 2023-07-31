@@ -25,7 +25,7 @@ public class OthersAvatarManager : MonoBehaviour
             UDPDownloadUser udpDownloadUser = othersAvatarUpdateQueue.Dequeue();
 
             SyncCommunicationUser syncCommunicationUser = udpDownloadUser.user;
-            DateTime timestamp = DateTime.ParseExact(udpDownloadUser.timestamp, "yyyy/MM/dd HH:mm:ss.fff", null);
+            DateTime timestamp = ParseDateTimeString(udpDownloadUser.timestamp);
             Debug.Log(timestamp.ToString());
 
             bool isAvatarExists = activeOthersAvatars.Any(avatar => avatar.userUuid == syncCommunicationUser.userUuid);
@@ -71,6 +71,33 @@ public class OthersAvatarManager : MonoBehaviour
     public void EnqueueOthersAvatarUpdate(UDPDownloadUser udpDownloadUser)
     {
         othersAvatarUpdateQueue.Enqueue(udpDownloadUser);
+    }
+
+    private DateTime ParseDateTimeString(string dateTimeString)
+    {
+        List<string> expectedFormats = new List<string>() { "yyyy/MM/dd HH:mm:ss.ff", "yyyy/MM/dd HH:mm:ss.fff" };
+        DateTime parsedDateTime = DateTime.Now;
+        bool isParsingSuccessed = false;
+
+        foreach (string expectedFormat in expectedFormats)
+        {
+            try
+            {
+                parsedDateTime = DateTime.ParseExact(dateTimeString, expectedFormat, null);
+                isParsingSuccessed = true;
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e);
+            }
+        }
+        
+        if (!isParsingSuccessed)
+        {
+            throw new FormatException("String was not recognized as a valid DateTime");
+        }
+
+        return parsedDateTime;
     }
 
 /*    public void CreateOrUpdateOthersAvatar(DateTime timestamp, SyncCommunicationUser syncCommunicationUser)

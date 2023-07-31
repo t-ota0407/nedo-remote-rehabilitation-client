@@ -8,6 +8,7 @@ public class SingletonDatabase
 
     public string myUserUuid;
     public string myToken;
+    public string myUserName;
 
     public static SingletonDatabase Instance
     {

@@ -87,6 +87,7 @@ public class StartSceneManager : MonoBehaviour
         if (startUIManager.IsUserCreation)
         {
             StartCoroutine(httpCommunicationManager.PostUserSignup(userName, password, SaveUserUuidAndToken, taskProgress.FinishedTask));
+            StartCoroutine(httpCommunicationManager.PostUserSignup(userName, password, SaveUserUuidAndToken, taskProgress.FinishedTask));
         }
         else
         {
@@ -98,6 +99,7 @@ public class StartSceneManager : MonoBehaviour
     {
         SingletonDatabase singletonDatabase = SingletonDatabase.Instance;
         singletonDatabase.myUserUuid = userUuid;
+        singletonDatabase.myUserName = startUIManager.UserNameInputFieldText;
         singletonDatabase.myToken = token;
     }
 
