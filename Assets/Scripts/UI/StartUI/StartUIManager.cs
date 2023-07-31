@@ -15,6 +15,8 @@ public class StartUIManager : MonoBehaviour
     [SerializeField] private TMP_InputField passwordInputField;
     [SerializeField] private Toggle userCreationToggle;
 
+    [SerializeField] private Text messageText;
+
     [SerializeField] private KeyboardManager keyboardManager;
 
     public bool IsClickedSimpleRehabilitationStartButton { get { return isClickedSimpleRehabilitationStartButton; } }
@@ -37,9 +39,21 @@ public class StartUIManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        simpleRehabilitationStartButton.onClick.AddListener(() => isClickedSimpleRehabilitationStartButton = true);
-        gamificationRehabilitationStartButton.onClick.AddListener(() => isClickedGamificationRehabilitationStartButton = true);
-        communicationRehabilitationStartButton.onClick.AddListener(() => isClickedCommunicationRehabilitationStartButton = true);
+        simpleRehabilitationStartButton.onClick.AddListener(() =>
+        {
+            DisableStartButtons();
+            isClickedSimpleRehabilitationStartButton = true;
+        });
+        gamificationRehabilitationStartButton.onClick.AddListener(() =>
+        {
+            DisableStartButtons();
+            isClickedGamificationRehabilitationStartButton = true;
+        });
+        communicationRehabilitationStartButton.onClick.AddListener(() =>
+        {
+            DisableStartButtons();
+            isClickedCommunicationRehabilitationStartButton = true;
+        });
 
         userNameInputField.onSelect.AddListener(text => targetInputField = userNameInputField);
         passwordInputField.onSelect.AddListener(text => targetInputField = passwordInputField);
@@ -53,6 +67,37 @@ public class StartUIManager : MonoBehaviour
             KeyboardInput keyboardInput = keyboardManager.ReadKeyboardInput();
             ChangeTargetInputField(keyboardInput);
         }
+    }
+
+    public void SetMessageText(string message, bool isWarning)
+    {
+        messageText.text = message;
+
+        if (isWarning)
+        {
+            messageText.color = new Color(1, 0.1f, 0.24f);
+        }
+        else
+        {
+            messageText.color = new Color(1, 1, 1);
+        }
+    }
+
+    public void ResetStartButtons()
+    {
+        isClickedSimpleRehabilitationStartButton = false;
+        isClickedGamificationRehabilitationStartButton = false;
+        isClickedCommunicationRehabilitationStartButton = false;
+        simpleRehabilitationStartButton.interactable = true;
+        gamificationRehabilitationStartButton.interactable = true;
+        communicationRehabilitationStartButton.interactable = true;
+    }
+
+    private void DisableStartButtons()
+    {
+        simpleRehabilitationStartButton.interactable = false;
+        gamificationRehabilitationStartButton.interactable = false;
+        communicationRehabilitationStartButton.interactable = false;
     }
 
     private void ChangeTargetInputField(KeyboardInput keyboardInput)

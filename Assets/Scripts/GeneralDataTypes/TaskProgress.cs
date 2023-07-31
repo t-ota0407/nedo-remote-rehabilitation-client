@@ -29,7 +29,7 @@ public class TaskProgress<T>
     {
         foreach (TaskProgress<T> taskProgress in taskList)
         {
-            if (taskProgress.progress == Progress.PENDING || taskProgress.progress == Progress.DOING)
+            if (taskProgress.progress != Progress.FINISHED)
             {
                 return taskProgress;
             }
@@ -46,5 +46,15 @@ public class TaskProgress<T>
     public void FinishedTask()
     {
         progress = Progress.FINISHED;
+    }
+
+    public void FailedTask()
+    {
+        progress = Progress.FAILED;
+    }
+
+    public void RetryTask()
+    {
+        progress = Progress.PENDING;
     }
 }

@@ -24,7 +24,7 @@ public class HTTPCommunicationManager : MonoBehaviour
         this.baseURL = baseURL;
     }
 
-    public IEnumerator PostUserSignup(string userName, string password, Action<string, string> userUuidAndTokenSetter, Action callback)
+    public IEnumerator PostUserSignup(string userName, string password, Action<string, string> userUuidAndTokenSetter, Action onSuccessed, Action onFailed)
     {
         string deviceSecret = "hogehoge";
         PostUserSignupRequestBody body = new(userName, password, deviceSecret);
@@ -45,20 +45,18 @@ public class HTTPCommunicationManager : MonoBehaviour
             string responseJson = request.downloadHandler.text;
             PostUserSignupResponseBody responseBody = JsonUtility.FromJson<PostUserSignupResponseBody>(responseJson);
 
-            Debug.Log(responseBody.userUuid);
-            // TODO: データを適切な場所に保存する。
-
             userUuidAndTokenSetter(responseBody.userUuid, responseBody.token);
 
-            callback.Invoke();
+            onSuccessed.Invoke();
         }
         else
         {
+            onFailed.Invoke();
             Debug.LogError("HTTP POST error: " + request.error);
         }
     }
 
-    public IEnumerator PostUserSignin(string userName, string password, Action<string, string> userUuidAndTokenSetter, Action callback)
+    public IEnumerator PostUserSignin(string userName, string password, Action<string, string> userUuidAndTokenSetter, Action onSuccessed, Action onFailed)
     {
         string deviceSecret = "hogehoge";
         PostUserSigninRequestBody body = new(userName, password, deviceSecret);
@@ -83,10 +81,11 @@ public class HTTPCommunicationManager : MonoBehaviour
 
             userUuidAndTokenSetter(responseBody.userUuid, responseBody.token);
 
-            callback.Invoke();
+            onSuccessed.Invoke();
         }
         else
         {
+            onFailed.Invoke();
             Debug.LogError("HTTP POST error: " + request.error);
         }
     }

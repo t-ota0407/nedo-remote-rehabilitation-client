@@ -26,7 +26,6 @@ public class OthersAvatarManager : MonoBehaviour
 
             SyncCommunicationUser syncCommunicationUser = udpDownloadUser.user;
             DateTime timestamp = ParseDateTimeString(udpDownloadUser.timestamp);
-            Debug.Log(timestamp.ToString());
 
             bool isAvatarExists = activeOthersAvatars.Any(avatar => avatar.userUuid == syncCommunicationUser.userUuid);
 
@@ -38,7 +37,6 @@ public class OthersAvatarManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("null");
                 OthersAvatar othersAvatar = new(syncCommunicationUser.userUuid);
                 activeOthersAvatars.Add(othersAvatar);
 
@@ -50,7 +48,7 @@ public class OthersAvatarManager : MonoBehaviour
 
                 string avatarAssetPath = "Prefabs/Avatars/Female_Adult_01 Variant";
                 GameObject avatarModel = (GameObject)Resources.Load(avatarAssetPath);
-                avatarModel = Instantiate(avatarModel, this.transform);
+                avatarModel = Instantiate(avatarModel, transform);
                 avatarModel.AddComponent<VRIK>();
                 VRIK vrik = avatarModel.GetComponent<VRIK>();
                 vrik.solver.spine.headTarget = vrikHeadTarget.transform;
@@ -99,26 +97,4 @@ public class OthersAvatarManager : MonoBehaviour
 
         return parsedDateTime;
     }
-
-/*    public void CreateOrUpdateOthersAvatar(DateTime timestamp, SyncCommunicationUser syncCommunicationUser)
-    {
-
-        bool isAvatarExists = activeOthersAvatars.Any(avatar => avatar.userUuid == syncCommunicationUser.userUuid);
-
-        if (isAvatarExists)
-        {
-            OthersAvatar targetOthersAvatar = activeOthersAvatars.Where(avatar => avatar.userUuid == syncCommunicationUser.userUuid).ToList()[0];
-
-            if (targetOthersAvatar.IsInitialized)
-            {
-                targetOthersAvatar.UpdateAvatar(timestamp, syncCommunicationUser);
-            }
-        }
-        else
-        {
-            Debug.Log("null");
-            OthersAvatar othersAvatar = new(syncCommunicationUser.userUuid);
-            activeOthersAvatars.Add(othersAvatar);
-        }
-    }*/
 }

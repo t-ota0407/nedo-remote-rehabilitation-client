@@ -13,7 +13,7 @@ public class OthersAvatar
     private GameObject vrikLeftRegTarget;
     private GameObject vrikRightRegTarget;
 
-    private DateTime lastDataTimestamp = DateTime.MinValue;
+    private DateTime lastUpdataTimestamp = DateTime.MinValue;
 
     public OthersAvatar(string userUuid)
     {
@@ -34,20 +34,13 @@ public class OthersAvatar
         this.vrikRightHandTarget = vrikRightHandTarget;
         this.vrikLeftRegTarget = vrikLeftRegTarget;
         this.vrikRightRegTarget = vrikRightRegTarget;
-
-        Debug.Log("initialized!!");
     }
 
     public void UpdateAvatar(DateTime timestamp, SyncCommunicationUser syncCommunicationUser)
     {
-        Debug.Log("called");
-        Debug.Log($"timestamp: {timestamp}");
-        Debug.Log($"timestamp: {lastDataTimestamp}");
-        if (timestamp > lastDataTimestamp)
+        if (timestamp > lastUpdataTimestamp)
         {
-            Debug.Log("in");
             Posture headPosture = syncCommunicationUser.headPosture;
-            Debug.Log(headPosture.position);
             vrikHeadTarget.transform.position = headPosture.position;
             vrikHeadTarget.transform.rotation = Quaternion.Euler(headPosture.rotation);
 
@@ -61,7 +54,7 @@ public class OthersAvatar
 
             // todo: leftReg‚ÆrightReg‚à“¯Šú‚³‚¹‚é
 
-            lastDataTimestamp = timestamp;
+            lastUpdataTimestamp = timestamp;
         }
     }
 }

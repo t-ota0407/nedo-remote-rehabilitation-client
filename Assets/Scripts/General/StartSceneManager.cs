@@ -39,6 +39,12 @@ public class StartSceneManager : MonoBehaviour
                         currentTaskProgress.StartedTask();
                     }
                 }
+                if (currentTaskProgress.progress == Progress.FAILED)
+                {
+                    startUIManager.SetMessageText(ErrorMessage.SERVER_COMMUNICATION_ERROR_MSG, true);
+                    startUIManager.ResetStartButtons();
+                    currentTaskProgress.RetryTask();
+                }
                 break;
 
             case StartSceneTask.FADING_OUT:
@@ -86,12 +92,11 @@ public class StartSceneManager : MonoBehaviour
 
         if (startUIManager.IsUserCreation)
         {
-            StartCoroutine(httpCommunicationManager.PostUserSignup(userName, password, SaveUserUuidAndToken, taskProgress.FinishedTask));
-            StartCoroutine(httpCommunicationManager.PostUserSignup(userName, password, SaveUserUuidAndToken, taskProgress.FinishedTask));
+            StartCoroutine(httpCommunicationManager.PostUserSignup(userName, password, SaveUserUuidAndToken, taskProgress.FinishedTask, taskProgress.FailedTask));
         }
         else
         {
-            StartCoroutine(httpCommunicationManager.PostUserSignin(userName, password, SaveUserUuidAndToken, taskProgress.FinishedTask));
+            StartCoroutine(httpCommunicationManager.PostUserSignin(userName, password, SaveUserUuidAndToken, taskProgress.FinishedTask, taskProgress.FailedTask));
         }
     }
 
