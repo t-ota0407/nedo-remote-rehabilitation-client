@@ -1,12 +1,17 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using RootMotion.FinalIK;
 
-
 public class MyAvatarManager : MonoBehaviour
 {
     private const int AVATAR_STATE_HOLDING_MILI_SECONDS = 1500;
+
+    [SerializeField] private RehabilitationSceneManager rehabilitationSceneManager;
+
+    [SerializeField] private FadeManager fadeManager;
+    [SerializeField] private LoadingProgressManager loadingProgressManager;
 
     [SerializeField] private ControllerInputManager controllerInputManager;
 
@@ -28,6 +33,10 @@ public class MyAvatarManager : MonoBehaviour
 
     [SerializeField] private GamificationManager gamificationManager;
 
+    [SerializeField] private AtHandUIManager atHandUIManager;
+
+    [SerializeField] private HTTPCommunicationManager httpCommunicationManager;
+
     private string uuid;
 
     private AvatarState avatarState;
@@ -42,6 +51,8 @@ public class MyAvatarManager : MonoBehaviour
     private bool isInKnifeSharpeningSetupEnteringArea = false;
     private KnifeSharpeningSetupManager targetSharpeningSetupManager;
 
+    private List<TaskProgress<FinishRehabilitationTask>> finishRehabilitationTaskProgressList;
+
     void Awake()
     {
         uuid = Guid.NewGuid().ToString();
@@ -53,6 +64,8 @@ public class MyAvatarManager : MonoBehaviour
         avatarState = AvatarState.Walking;
 
         SetControllerAndRaysVisibility(false);
+
+        finishRehabilitationTaskProgressList = TaskProgress<FinishRehabilitationTask>.GenerateTaskProgressList();
     }
 
     // Update is called once per frame
@@ -61,6 +74,8 @@ public class MyAvatarManager : MonoBehaviour
         UpdateAvatarState();
         UpdateVrikTargetPosture();
         CheckAvatarCalibration();
+
+        CheckFinishRehabilitationTask();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -129,7 +144,17 @@ public class MyAvatarManager : MonoBehaviour
                     controllerInputManager = transform.GetComponent<ControllerInputManager>();
                 }
 
-                if (controllerInputManager.IsPressedTrigger
+                if (controllerInputManager.IsPressedButtonX
+                    && (DateTime.Now - avatarStateUpdatedAt).TotalMilliseconds > AVATAR_STATE_HOLDING_MILI_SECONDS)
+                {
+                    SetControllerAndRaysVisibility(true);
+                    atHandUIManager.ActivateUI("終了メニュー", "リハビリテーションを終了します。よろしいですか？", "終了しない", "終了する", CancelToFinishRehabilitation, ExecuteCommunicationToFinishRehabilitation);
+
+                    avatarState = AvatarState.InteractingWithUI;
+                    avatarStateUpdatedAt = DateTime.Now;
+                }
+
+                if (controllerInputManager.IsPressedRightHandTrigger
                     && isInKnifeSharpeningSetupEnteringArea
                     && (DateTime.Now - avatarStateUpdatedAt).TotalMilliseconds > AVATAR_STATE_HOLDING_MILI_SECONDS)
                 {
@@ -150,7 +175,7 @@ public class MyAvatarManager : MonoBehaviour
                 break;
 
             case AvatarState.KnifeSharpening: // KnifeSharpening => Walking
-                if (controllerInputManager.IsPressedTrigger
+                if (controllerInputManager.IsPressedRightHandTrigger
                     && (DateTime.Now - avatarStateUpdatedAt).TotalMilliseconds > AVATAR_STATE_HOLDING_MILI_SECONDS)
                 {
                     vrik.solver.leftLeg.target = null;
@@ -240,11 +265,103 @@ public class MyAvatarManager : MonoBehaviour
         }
     }
 
+    private void CheckFinishRehabilitationTask()
+    {
+        var currentTaskProgress = TaskProgress<FinishRehabilitationTask>.GetCurrentTaskProgress(finishRehabilitationTaskProgressList);
+        switch (currentTaskProgress.task)
+        {
+            case FinishRehabilitationTask.POST_RESULT:
+                if (currentTaskProgress.progress == Progress.FAILED)
+                {
+                    // todo: POST_RESULTからやりなおし
+                    currentTaskProgress.RetryTask();
+                }
+                break;
+            case FinishRehabilitationTask.POST_SAVE_DATA:
+                if (currentTaskProgress.progress == Progress.PENDING)
+                {
+                    ExecuteCommunicationToFinishRehabilitation();
+                    currentTaskProgress.StartedTask();
+                }
+                if (currentTaskProgress.progress == Progress.FAILED)
+                {
+                    // todo: POST_SAVE_DATAからやりなおし
+                    currentTaskProgress.RetryTask();
+                }
+                break;
+            case FinishRehabilitationTask.FADING_OUT:
+                if (currentTaskProgress.progress == Progress.PENDING)
+                {
+                    fadeManager.StartFadeOut();
+                    loadingProgressManager.Display();
+                    currentTaskProgress.StartedTask();
+
+                }
+                else if (currentTaskProgress.progress == Progress.DOING)
+                {
+                    if (fadeManager.FadeStatus == FadeStatus.FADED_OUT)
+                    {
+                        currentTaskProgress.FinishedTask();
+                    }
+                }
+                break;
+
+            case FinishRehabilitationTask.SCENE_LOADING:
+                if (currentTaskProgress.progress == Progress.PENDING)
+                {
+                    StartCoroutine(rehabilitationSceneManager.LoadStartSceneWithIndicator());
+                    currentTaskProgress.StartedTask();
+                }
+                break;
+        }
+    }
+
     private void SetControllerAndRaysVisibility(bool visibility)
     {
         leftController.GetComponent<ActionBasedController>().hideControllerModel = !visibility;
         rightController.GetComponent<ActionBasedController>().hideControllerModel = !visibility;
         leftRayInteractor.GetComponent<XRRayInteractor>().enabled = visibility;
         rightRayInteractor.GetComponent<XRRayInteractor>().enabled = visibility;
+    }
+
+    private void CancelToFinishRehabilitation()
+    {
+        atHandUIManager.DeactivateUI();
+        avatarState = AvatarState.Walking;
+        SetControllerAndRaysVisibility(false);
+    }
+
+    private void ExecuteCommunicationToFinishRehabilitation()
+    {
+        var currentTaskProgress = TaskProgress<FinishRehabilitationTask>.GetCurrentTaskProgress(finishRehabilitationTaskProgressList);
+        currentTaskProgress.StartedTask();
+
+        switch (currentTaskProgress.task)
+        {
+            case FinishRehabilitationTask.POST_RESULT:
+                Debug.Log("POST_RESULT");
+                string userUuid = SingletonDatabase.Instance.myUserUuid;
+
+                // todo: 一回通信失敗とかになっても大丈夫ようにキャッシュする
+                string rehabilitationCondition = SingletonDatabase.Instance.currentRehabilitationCondition;
+                string rehabilitationStartedAt = rehabilitationSceneManager.RehabilitationStartedAt.ToString("yyyy/MM/dd HH:mm:ss.ff");
+                string rehabilitationFinishedAt = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.ff");
+                int reachingTimes = 0; // todo: 適切な値を設定する
+                int sharpenedKnifeBefore = 0; // todo: 適切な値を設定する
+                int sharpenedKnifeAfter = 0; // todo: 適切な値を設定する
+                RehabilitationResultContent result = new(rehabilitationCondition, rehabilitationStartedAt, rehabilitationFinishedAt, reachingTimes, sharpenedKnifeBefore, sharpenedKnifeAfter);
+
+                StartCoroutine(httpCommunicationManager.PostRehabilitationResult(userUuid, result, currentTaskProgress.FinishedTask, currentTaskProgress.FailedTask));
+                break;
+
+            case FinishRehabilitationTask.POST_SAVE_DATA:
+                Debug.Log("POST_SAVE_DATA");
+                userUuid = SingletonDatabase.Instance.myUserUuid;
+                int sharpenedKnife = gamificationManager.SharpenedKnife;
+                RehabilitationSaveDataContent saveData = new(sharpenedKnife);
+
+                StartCoroutine(httpCommunicationManager.PostRehabilitationSave(userUuid, saveData, currentTaskProgress.FinishedTask, currentTaskProgress.FailedTask));
+                break;
+        }
     }
 }

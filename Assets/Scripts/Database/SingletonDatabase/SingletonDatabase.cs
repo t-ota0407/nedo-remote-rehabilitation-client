@@ -9,6 +9,7 @@ public class SingletonDatabase
     public string myUserUuid;
     public string myToken;
     public string myUserName;
+    public string currentRehabilitationCondition;
 
     public static SingletonDatabase Instance
     {

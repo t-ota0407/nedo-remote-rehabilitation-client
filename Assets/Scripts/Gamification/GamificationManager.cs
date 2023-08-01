@@ -7,6 +7,7 @@ public class GamificationManager : MonoBehaviour
 {
     private const int REACHING_KNIFE_INCREMENT_COEFFICIENT = 3;
 
+    public int SharpenedKnife { get { return sharpenedKnife; } }
     private int sharpenedKnife = 0;
     private float autoIncrementSharpenedKnifePerSecond = 0;
 

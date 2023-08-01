@@ -26,17 +26,30 @@ public class StartSceneManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        TaskProgress<StartSceneTask> currentTaskProgress = TaskProgress<StartSceneTask>.GetCurrentTaskProgress(taskProgressList);
+        var currentTaskProgress = TaskProgress<StartSceneTask>.GetCurrentTaskProgress(taskProgressList);
 
         switch (currentTaskProgress.task)
         {
             case StartSceneTask.HTTP_COMMUNICATION:
                 if (currentTaskProgress.progress == Progress.PENDING)
                 {
-                    if ((startUIManager.IsClickedSimpleRehabilitationStartButton))
+                    if (startUIManager.IsClickedSimpleRehabilitationStartButton)
                     {
                         StartSignupOrSignin(currentTaskProgress);
                         currentTaskProgress.StartedTask();
+                        SingletonDatabase.Instance.currentRehabilitationCondition = "SIMPLE";
+                    }
+                    if (startUIManager.IsClickedGamificationRehabilitationStartButton)
+                    {
+                        StartSignupOrSignin(currentTaskProgress);
+                        currentTaskProgress.StartedTask();
+                        SingletonDatabase.Instance.currentRehabilitationCondition = "GAMIFICATION";
+                    }
+                    if (startUIManager.IsClickedCommunicationRehabilitationStartButton)
+                    {
+                        StartSignupOrSignin(currentTaskProgress);
+                        currentTaskProgress.StartedTask();
+                        SingletonDatabase.Instance.currentRehabilitationCondition = "COMMUNICATION";
                     }
                 }
                 if (currentTaskProgress.progress == Progress.FAILED)
