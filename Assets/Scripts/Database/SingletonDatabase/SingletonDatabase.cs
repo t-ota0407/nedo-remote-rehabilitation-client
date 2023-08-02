@@ -10,6 +10,7 @@ public class SingletonDatabase
     public string myToken;
     public string myUserName;
     public string currentRehabilitationCondition;
+    public RehabilitationSaveDataContent loadedSaveData;
 
     public static SingletonDatabase Instance
     {

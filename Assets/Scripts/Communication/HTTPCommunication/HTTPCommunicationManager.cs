@@ -90,18 +90,29 @@ public class HTTPCommunicationManager : MonoBehaviour
         }
     }
 
-    public IEnumerator GetRehabilitationSave()
+    public IEnumerator GetRehabilitationSave(string userUuid, Action<RehabilitationSaveDataContent> loadedSaveDataSetter, Action onSuccessed, Action onFailed)
     {
-        string url = baseURL + "/api/v1/rehabilitaion-save";
+        string url = $"{baseURL}/api/v1/rehabilitation-save?userUuid={userUuid}";
 
         UnityWebRequest request = new(url, "GET");
-
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader(STR_CONTENT_TYPE, STR_APPLICATION_JSON);
+        request.SetRequestHeader(STR_AUTHORIZATION, $"Bearer {SingletonDatabase.Instance.myToken}");
+        
         yield return request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.Success)
         {
             string responseJson = request.downloadHandler.text;
-            
+            GetRehabilitationSaveResponseBody responseBody = JsonUtility.FromJson<GetRehabilitationSaveResponseBody>(responseJson);
+
+            loadedSaveDataSetter(responseBody.saveData);
+
+            onSuccessed.Invoke();
+        }
+        else
+        {
+            onFailed.Invoke();
         }
     }
 

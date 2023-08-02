@@ -35,7 +35,8 @@ public class GamificationManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        // null‚Ì”»’è‚ğ‚â‚éB
+        sharpenedKnife = SingletonDatabase.Instance.loadedSaveData.sharpenedKnife;
     }
 
     // Update is called once per frame

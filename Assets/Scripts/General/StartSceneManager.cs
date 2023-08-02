@@ -17,6 +17,8 @@ public class StartSceneManager : MonoBehaviour
 
     private List<TaskProgress<StartSceneTask>> taskProgressList;
 
+    private bool isUserCreationSelected = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,7 +32,7 @@ public class StartSceneManager : MonoBehaviour
 
         switch (currentTaskProgress.task)
         {
-            case StartSceneTask.HTTP_COMMUNICATION:
+            case StartSceneTask.SIGNUP_OR_SIGNIN:
                 if (currentTaskProgress.progress == Progress.PENDING)
                 {
                     if (startUIManager.IsClickedSimpleRehabilitationStartButton)
@@ -57,6 +59,23 @@ public class StartSceneManager : MonoBehaviour
                     startUIManager.SetMessageText(ErrorMessage.SERVER_COMMUNICATION_ERROR_MSG, true);
                     startUIManager.ResetStartButtons();
                     currentTaskProgress.RetryTask();
+                }
+                break;
+
+            case StartSceneTask.GET_SAVE_DATA:
+                if (currentTaskProgress.progress == Progress.PENDING)
+                {
+                    if (isUserCreationSelected)
+                    {
+                        currentTaskProgress.StartedTask();
+                        currentTaskProgress.FinishedTask();
+                    }
+                    else
+                    {
+                        Debug.Log("StartGetSaveData"); 
+                        StartGetSaveData(currentTaskProgress);
+                        currentTaskProgress.StartedTask();
+                    }
                 }
                 break;
 
@@ -103,7 +122,9 @@ public class StartSceneManager : MonoBehaviour
         string userName = startUIManager.UserNameInputFieldText;
         string password = startUIManager.PasswordInputFieldText;
 
-        if (startUIManager.IsUserCreation)
+        isUserCreationSelected = startUIManager.IsUserCreation;
+
+        if (isUserCreationSelected)
         {
             StartCoroutine(httpCommunicationManager.PostUserSignup(userName, password, SaveUserUuidAndToken, taskProgress.FinishedTask, taskProgress.FailedTask));
         }
@@ -113,12 +134,25 @@ public class StartSceneManager : MonoBehaviour
         }
     }
 
+    private void StartGetSaveData(TaskProgress<StartSceneTask> taskProgress)
+    {
+        string userUuid = SingletonDatabase.Instance.myUserUuid;
+
+        StartCoroutine(httpCommunicationManager.GetRehabilitationSave(userUuid, SaveLoadedSaveData, taskProgress.FinishedTask, taskProgress.FailedTask));
+    }
+
     private void SaveUserUuidAndToken(string userUuid, string token)
     {
         SingletonDatabase singletonDatabase = SingletonDatabase.Instance;
         singletonDatabase.myUserUuid = userUuid;
         singletonDatabase.myUserName = startUIManager.UserNameInputFieldText;
         singletonDatabase.myToken = token;
+    }
+
+    private void SaveLoadedSaveData(RehabilitationSaveDataContent loadedSaveData)
+    {
+        SingletonDatabase singletonDatabase = SingletonDatabase.Instance;
+        singletonDatabase.loadedSaveData = loadedSaveData;
     }
 
     private IEnumerator LoadSceneWithIndicator()
