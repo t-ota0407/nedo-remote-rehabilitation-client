@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -31,15 +30,8 @@ public class HTTPCommunicationManager : MonoBehaviour
     public IEnumerator PostUserSignup(string userName, string password, Action<string, string> userUuidAndTokenSetter, Action onSuccessed, Action onFailed)
     {
         PostUserSignupRequestBody body = new(userName, password);
-        string bodyJson = JsonUtility.ToJson(body);
-        byte[] postData = Encoding.UTF8.GetBytes(bodyJson);
 
-        string url = baseURL + "/api/v1/user/signup";
-
-        UnityWebRequest request = new(url, "POST");
-        request.uploadHandler = new UploadHandlerRaw(postData);
-        request.downloadHandler = new DownloadHandlerBuffer();
-        request.SetRequestHeader(STR_CONTENT_TYPE, STR_APPLICATION_JSON);
+        UnityWebRequest request = GenerateStandardPostRequest("/api/v1/user/signup", body);
 
         yield return request.SendWebRequest();
 
@@ -62,15 +54,8 @@ public class HTTPCommunicationManager : MonoBehaviour
     public IEnumerator PostUserSignin(string userName, string password, Action<string, string> userUuidAndTokenSetter, Action onSuccessed, Action onFailed)
     {
         PostUserSigninRequestBody body = new(userName, password);
-        string bodyJson = JsonUtility.ToJson(body);
-        byte[] postData = Encoding.UTF8.GetBytes(bodyJson);
 
-        string url = baseURL + "/api/v1/user/signin";
-
-        UnityWebRequest request = new(url, "POST");
-        request.uploadHandler = new UploadHandlerRaw(postData);
-        request.downloadHandler = new DownloadHandlerBuffer();
-        request.SetRequestHeader(STR_CONTENT_TYPE, STR_APPLICATION_JSON);
+        UnityWebRequest request = GenerateStandardPostRequest("/api/v1/user/signin", body);
 
         yield return request.SendWebRequest();
 
@@ -78,6 +63,30 @@ public class HTTPCommunicationManager : MonoBehaviour
         {
             string responseJson = request.downloadHandler.text;
             PostUserSigninResponseBody responseBody = JsonUtility.FromJson<PostUserSigninResponseBody>(responseJson);
+
+            userUuidAndTokenSetter(responseBody.userUuid, responseBody.token);
+
+            onSuccessed.Invoke();
+        }
+        else
+        {
+            onFailed.Invoke();
+            Debug.LogError("HTTP POST error: " + request.error);
+        }
+    }
+
+    public IEnumerator PostUserSignupWithTemporaryAccount(string userName, Action<string, string> userUuidAndTokenSetter, Action onSuccessed, Action onFailed)
+    {
+        PostUserSignupWithTemporaryAccountRequestBody body = new(userName);
+
+        UnityWebRequest request = GenerateStandardPostRequest("/api/v1/user/signup-with-temporary-account", body);
+
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            string responseJson = request.downloadHandler.text;
+            PostUserSignupWithTemporaryAccountResponseBody responseBody = JsonUtility.FromJson<PostUserSignupWithTemporaryAccountResponseBody>(responseJson);
 
             userUuidAndTokenSetter(responseBody.userUuid, responseBody.token);
 
@@ -119,15 +128,8 @@ public class HTTPCommunicationManager : MonoBehaviour
     public IEnumerator PostRehabilitationSave(string userUuid, RehabilitationSaveDataContent saveData, Action onSuccessed, Action onFailed)
     {
         PostRehabilitationSaveRequestBody body = new(userUuid, saveData);
-        string bodyJson = JsonUtility.ToJson(body);
-        byte[] postData = Encoding.UTF8.GetBytes(bodyJson);
 
-        string url = baseURL + "/api/v1/rehabilitation-save";
-
-        UnityWebRequest request = new(url, "POST");
-        request.uploadHandler = new UploadHandlerRaw(postData);
-        request.downloadHandler = new DownloadHandlerBuffer();
-        request.SetRequestHeader(STR_CONTENT_TYPE, STR_APPLICATION_JSON);
+        UnityWebRequest request = GenerateStandardPostRequest("/api/v1/rehabilitation-save", body);
         request.SetRequestHeader(STR_AUTHORIZATION, $"Bearer {SingletonDatabase.Instance.myToken}");
 
         yield return request.SendWebRequest();
@@ -147,24 +149,15 @@ public class HTTPCommunicationManager : MonoBehaviour
 
     public IEnumerator PostRehabilitationResult(string userUuid, RehabilitationResultContent result, Action onSuccessed, Action onFailed)
     {
-        Debug.Log("issued");
         PostRehabilitationResultRequestBody body = new(userUuid, result);
-        string bodyJson = JsonUtility.ToJson(body);
-        byte[] postData = Encoding.UTF8.GetBytes(bodyJson);
 
-        string url = baseURL + "/api/v1/rehabilitation-result";
-
-        UnityWebRequest request = new(url, "POST");
-        request.uploadHandler = new UploadHandlerRaw(postData);
-        request.downloadHandler = new DownloadHandlerBuffer();
-        request.SetRequestHeader(STR_CONTENT_TYPE, STR_APPLICATION_JSON);
+        UnityWebRequest request = GenerateStandardPostRequest("/api/v1/rehabilitation-result", body);
         request.SetRequestHeader(STR_AUTHORIZATION, $"Bearer {SingletonDatabase.Instance.myToken}");
 
         yield return request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.Success)
         {
-            Debug.Log("success");
             string responseJson = request.downloadHandler.text;
             PostRehabilitationResultResponseBody responseBody = JsonUtility.FromJson<PostRehabilitationResultResponseBody>(responseJson);
 
@@ -172,9 +165,23 @@ public class HTTPCommunicationManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("failed");
             Debug.Log(request.downloadHandler.error);
             onFailed.Invoke();
         }
+    }
+
+    private UnityWebRequest GenerateStandardPostRequest(string endPoint, object serializableTypeBody)
+    {
+        string url = baseURL + endPoint;
+
+        string bodyJson = JsonUtility.ToJson(serializableTypeBody);
+        byte[] postData = Encoding.UTF8.GetBytes(bodyJson);
+
+        UnityWebRequest request = new(url, "POST");
+        request.uploadHandler = new UploadHandlerRaw(postData);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader(STR_CONTENT_TYPE, STR_APPLICATION_JSON);
+
+        return request;
     }
 }

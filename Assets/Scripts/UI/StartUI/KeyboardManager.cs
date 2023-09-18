@@ -53,4 +53,14 @@ public class KeyboardManager : MonoBehaviour
         isInputed = false;
         return keyboardInput;
     }
+
+    public void Activate()
+    {
+        this.gameObject.SetActive(true);
+    }
+
+    public void Deactivate()
+    {
+        this.gameObject.SetActive(false);
+    }
 }

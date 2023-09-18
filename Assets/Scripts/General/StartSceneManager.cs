@@ -53,6 +53,24 @@ public class StartSceneManager : MonoBehaviour
                         currentTaskProgress.StartedTask();
                         SingletonDatabase.Instance.currentRehabilitationCondition = "COMMUNICATION";
                     }
+                    if (startUIManager.IsClickedSimpleRehabilitationWithTemporaryAccountStartButton)
+                    {
+                        StartSignupWithTemporaryAccount(currentTaskProgress);
+                        currentTaskProgress.StartedTask();
+                        SingletonDatabase.Instance.currentRehabilitationCondition = "SIMPLE";
+                    }
+                    if (startUIManager.IsClickedGamificationRehabilitationWithTemporaryAccountStartButton)
+                    {
+                        StartSignupWithTemporaryAccount(currentTaskProgress);
+                        currentTaskProgress.StartedTask();
+                        SingletonDatabase.Instance.currentRehabilitationCondition = "GAMIFICATION";
+                    }
+                    if (startUIManager.IsClickedCommunicationRehabilitationWithTemporaryAccountStartButton)
+                    {
+                        StartSignupWithTemporaryAccount(currentTaskProgress);
+                        currentTaskProgress.StartedTask();
+                        SingletonDatabase.Instance.currentRehabilitationCondition = "COMMUNICATION";
+                    }
                 }
                 if (currentTaskProgress.progress == Progress.FAILED)
                 {
@@ -65,7 +83,8 @@ public class StartSceneManager : MonoBehaviour
             case StartSceneTask.GET_SAVE_DATA:
                 if (currentTaskProgress.progress == Progress.PENDING)
                 {
-                    if (isUserCreationSelected)
+                    bool isSaveDataTaskSkipped = isUserCreationSelected || Config.IsTemporaryAccountMode;
+                    if (isSaveDataTaskSkipped)
                     {
                         currentTaskProgress.StartedTask();
                         currentTaskProgress.FinishedTask();
@@ -104,17 +123,6 @@ public class StartSceneManager : MonoBehaviour
                 }
                 break;
         }
-
-
-        if (startUIManager.IsClickedGamificationRehabilitationStartButton)
-        {
-
-        }
-
-        if (startUIManager.IsClickedCommunicationRehabilitationStartButton)
-        {
-
-        }
     }
 
     private void StartSignupOrSignin(TaskProgress<StartSceneTask> taskProgress)
@@ -132,6 +140,12 @@ public class StartSceneManager : MonoBehaviour
         {
             StartCoroutine(httpCommunicationManager.PostUserSignin(userName, password, SaveUserUuidAndToken, taskProgress.FinishedTask, taskProgress.FailedTask));
         }
+    }
+
+    private void StartSignupWithTemporaryAccount(TaskProgress<StartSceneTask> taskProgress)
+    {
+        string userName = "";
+        StartCoroutine(httpCommunicationManager.PostUserSignupWithTemporaryAccount(userName, SaveUserUuidAndToken, taskProgress.FinishedTask, taskProgress.FailedTask));
     }
 
     private void StartGetSaveData(TaskProgress<StartSceneTask> taskProgress)
