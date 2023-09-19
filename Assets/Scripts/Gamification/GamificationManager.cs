@@ -71,9 +71,9 @@ public class GamificationManager : MonoBehaviour
 
                 hasKnifeSharpenedDetected = false;
             }
-        }
 
-        CheckSharpenedKnifeAutoIncrement();
+            CheckSharpenedKnifeAutoIncrement();
+        }
 
         CheckEnvironmentEvent();
         CheckLogEvent();

@@ -161,7 +161,6 @@ public class MyAvatarManager : MonoBehaviour
                     xrOrigin.transform.position = targetSharpeningSetupManager.StandingOrigin.transform.position;
                     xrOrigin.transform.localRotation = targetSharpeningSetupManager.transform.rotation * Quaternion.Euler(0, 90, 0);
 
-                    Debug.Log("calling continue()");
                     gamificationManager.ContinueGame(targetSharpeningSetupManager);
 
                     vrik.solver.leftLeg.target = vrikLeftRegTarget.transform;
@@ -179,6 +178,8 @@ public class MyAvatarManager : MonoBehaviour
                 if (controllerInputManager.IsPressedRightHandTrigger
                     && (DateTime.Now - avatarStateUpdatedAt).TotalMilliseconds > AVATAR_STATE_HOLDING_MILI_SECONDS)
                 {
+                    gamificationManager.StopGame();
+
                     vrik.solver.leftLeg.target = null;
                     vrik.solver.leftLeg.positionWeight = 0;
                     vrik.solver.rightLeg.target = null;
