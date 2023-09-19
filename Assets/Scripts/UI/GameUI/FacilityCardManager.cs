@@ -40,9 +40,11 @@ public class FacilityCardManager : MonoBehaviour
         }
         else
         {
+            Debug.Log(facilityName);
             unknownImage.enabled = false;
             facilityImage.enabled = true;
-            facilityNameText.text = facilityName;
+            // 全自動シャープナーのみ改行を含むが、インスペクターから改行を指定すると適切に表示されないため、個別に対応。
+            facilityNameText.text = (facilityName.Equals("全自動シャープナー")) ? "全自動\nシャープナー" : facilityName;
             facilityAmountText.text = $"{amount}";
         }
     }

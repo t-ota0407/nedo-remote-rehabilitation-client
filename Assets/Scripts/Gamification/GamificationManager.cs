@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class GamificationManager : MonoBehaviour
 {
-    private const int REACHING_KNIFE_INCREMENT_COEFFICIENT = 3;
+    private const int REACHING_KNIFE_INCREMENT_COEFFICIENT = 5;
 
     public int SharpenedKnife { get { return sharpenedKnife; } }
     private int sharpenedKnife = 0;
@@ -35,7 +35,6 @@ public class GamificationManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // nullÇÃîªíËÇÇ‚ÇÈÅB
         sharpenedKnife = SingletonDatabase.Instance.loadedSaveData.sharpenedKnife;
     }
 

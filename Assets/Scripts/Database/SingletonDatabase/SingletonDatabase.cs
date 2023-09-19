@@ -19,6 +19,7 @@ public class SingletonDatabase
             if (instance == null)
             {
                 instance = new SingletonDatabase();
+                instance.loadedSaveData = new(0);
             }
             return instance;
         }

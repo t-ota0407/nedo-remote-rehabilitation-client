@@ -161,6 +161,7 @@ public class MyAvatarManager : MonoBehaviour
                     xrOrigin.transform.position = targetSharpeningSetupManager.StandingOrigin.transform.position;
                     xrOrigin.transform.localRotation = targetSharpeningSetupManager.transform.rotation * Quaternion.Euler(0, 90, 0);
 
+                    Debug.Log("calling continue()");
                     gamificationManager.ContinueGame(targetSharpeningSetupManager);
 
                     vrik.solver.leftLeg.target = vrikLeftRegTarget.transform;
