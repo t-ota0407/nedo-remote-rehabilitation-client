@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Start.unity
     guid: 06627eb803cb8314fae00b51cb89528a
   - enabled: 1
+    path: Assets/Scenes/Simple.unity
+    guid: 59345f9bb8a02c24fac7422b7a8cb339
+  - enabled: 1
     path: Assets/Scenes/Rehabilitation.unity
     guid: 275e872adab6504418ba4f17bb686806
   m_configObjects:
