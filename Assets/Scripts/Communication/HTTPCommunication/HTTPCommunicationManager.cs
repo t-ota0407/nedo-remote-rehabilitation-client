@@ -10,7 +10,12 @@ public class HTTPCommunicationManager : MonoBehaviour
     private const string STR_APPLICATION_JSON = "application/json";
     private const string STR_AUTHORIZATION = "Authorization";
 
-    [SerializeField] private string baseURL;
+    private string baseURL;
+
+    void Awake()
+    {
+        this.baseURL = "http://" + Config.serverIP + ":" + Config.serverHttpPort;
+    }
 
     void Start()
     {

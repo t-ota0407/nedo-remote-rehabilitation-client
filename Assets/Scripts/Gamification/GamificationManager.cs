@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class GamificationManager : MonoBehaviour
 {
-    private const int REACHING_KNIFE_INCREMENT_COEFFICIENT = 50;
+    private const int REACHING_KNIFE_INCREMENT_COEFFICIENT = 5;
 
     public int SharpenedKnife { get { return sharpenedKnife; } }
     private int sharpenedKnife = 0;

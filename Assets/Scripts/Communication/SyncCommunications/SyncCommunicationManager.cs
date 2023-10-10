@@ -9,10 +9,6 @@ using UnityEngine;
 
 public class SyncCommunicationManager : MonoBehaviour
 {
-    [SerializeField] private string serverIP;
-    [SerializeField] private int serverUdpPort;
-    [SerializeField] private int clientUdpPort;
-
     [SerializeField] private MyAvatarManager myAvatarManager;
     [SerializeField] private OthersAvatarManager othersAvatarManager;
 
@@ -22,7 +18,7 @@ public class SyncCommunicationManager : MonoBehaviour
 
     void Awake()
     {
-        udpCommunicationManager = new(serverIP, serverUdpPort, clientUdpPort);
+        udpCommunicationManager = new(Config.serverIP, Config.serverUdpPort, Config.clientUdpPort);
     }
 
     // Start is called before the first frame update
