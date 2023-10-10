@@ -9,9 +9,6 @@ public class StartSceneManager : MonoBehaviour
     private const int sceneTransitionMaximumWaitDuration = 10000;
     private const float sceneTransitionMinimumLoadingProgress = 0.89f;
 
-    private const string GAMIFICATION_SCENE_NAME = "Rehabilitation";
-    private const string SIMPLE_SCENE_NAME = "Simple";
-
     [Header("Reference")]
     [SerializeField] private StartUIManager startUIManager;
     [SerializeField] private FadeManager fadeManager;
@@ -21,8 +18,6 @@ public class StartSceneManager : MonoBehaviour
     private List<TaskProgress<StartSceneTask>> taskProgressList;
 
     private bool isUserCreationSelected = false;
-
-    private string loadingSceneName = GAMIFICATION_SCENE_NAME;
 
     // Start is called before the first frame update
     void Start()
@@ -45,42 +40,36 @@ public class StartSceneManager : MonoBehaviour
                         StartSignupOrSignin(currentTaskProgress);
                         currentTaskProgress.StartedTask();
                         SingletonDatabase.Instance.currentRehabilitationCondition = RehabilitationCondition.SIMPLE;
-                        loadingSceneName = SIMPLE_SCENE_NAME;
                     }
                     if (startUIManager.IsClickedGamificationRehabilitationStartButton)
                     {
                         StartSignupOrSignin(currentTaskProgress);
                         currentTaskProgress.StartedTask();
                         SingletonDatabase.Instance.currentRehabilitationCondition = RehabilitationCondition.GAMIFICATION;
-                        loadingSceneName = GAMIFICATION_SCENE_NAME;
                     }
                     if (startUIManager.IsClickedCommunicationRehabilitationStartButton)
                     {
                         StartSignupOrSignin(currentTaskProgress);
                         currentTaskProgress.StartedTask();
                         SingletonDatabase.Instance.currentRehabilitationCondition = RehabilitationCondition.COMMUNICATION;
-                        loadingSceneName = GAMIFICATION_SCENE_NAME;
                     }
                     if (startUIManager.IsClickedSimpleRehabilitationWithTemporaryAccountStartButton)
                     {
                         StartSignupWithTemporaryAccount(currentTaskProgress);
                         currentTaskProgress.StartedTask();
                         SingletonDatabase.Instance.currentRehabilitationCondition = RehabilitationCondition.SIMPLE;
-                        loadingSceneName = SIMPLE_SCENE_NAME;
                     }
                     if (startUIManager.IsClickedGamificationRehabilitationWithTemporaryAccountStartButton)
                     {
                         StartSignupWithTemporaryAccount(currentTaskProgress);
                         currentTaskProgress.StartedTask();
                         SingletonDatabase.Instance.currentRehabilitationCondition = RehabilitationCondition.GAMIFICATION;
-                        loadingSceneName = GAMIFICATION_SCENE_NAME;
                     }
                     if (startUIManager.IsClickedCommunicationRehabilitationWithTemporaryAccountStartButton)
                     {
                         StartSignupWithTemporaryAccount(currentTaskProgress);
                         currentTaskProgress.StartedTask();
                         SingletonDatabase.Instance.currentRehabilitationCondition = RehabilitationCondition.COMMUNICATION;
-                        loadingSceneName = GAMIFICATION_SCENE_NAME;
                     }
                 }
                 if (currentTaskProgress.progress == Progress.FAILED)
@@ -127,7 +116,7 @@ public class StartSceneManager : MonoBehaviour
             case StartSceneTask.SCENE_LOADING:
                 if (currentTaskProgress.progress == Progress.PENDING)
                 {
-                    StartCoroutine(LoadSceneWithIndicator(loadingSceneName));
+                    StartCoroutine(LoadSceneWithIndicator("Rehabilitation"));
                     currentTaskProgress.StartedTask();
                 }
                 break;

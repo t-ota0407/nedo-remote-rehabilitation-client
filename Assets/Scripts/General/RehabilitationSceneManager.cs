@@ -17,6 +17,8 @@ public class RehabilitationSceneManager : MonoBehaviour
 
     [SerializeField] private SyncCommunicationManager syncCommunicationManager;
 
+    [SerializeField] private GameObject gameCanvas;
+
     private FadeManager fadeManager;
     private LoadingProgressManager loadingProgressManager;
     private MyAvatarManager myAvatarManager;
@@ -34,9 +36,20 @@ public class RehabilitationSceneManager : MonoBehaviour
 
         fadeManager.StartFadeIn();
 
-        syncCommunicationManager.StartSyncCommunication();
 
         rehabilitationStartedAt = DateTime.Now;
+
+        switch (SingletonDatabase.Instance.currentRehabilitationCondition)
+        {
+            case RehabilitationCondition.SIMPLE:
+                gameCanvas.SetActive(false);
+                break;
+            case RehabilitationCondition.GAMIFICATION:
+                break;
+            case RehabilitationCondition.COMMUNICATION:
+                syncCommunicationManager.StartSyncCommunication();
+                break;
+        }
     }
 
     // Update is called once per frame
