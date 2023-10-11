@@ -5,6 +5,7 @@ public class SyncCommunicationUser
 {
     public string userUuid;
     public string userName;
+    public string avatarType;
     public string rehabilitationCondition;
     public float reachingProgress;
     public Posture headPosture;

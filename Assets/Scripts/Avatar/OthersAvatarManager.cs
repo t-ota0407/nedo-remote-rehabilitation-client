@@ -46,7 +46,8 @@ public class OthersAvatarManager : MonoBehaviour
                 GameObject vrikLeftRegTarget = new GameObject($"{othersAvatar.userUuid}_leftReg");
                 GameObject vrikRightRegTarget = new GameObject($"{othersAvatar.userUuid}_rightReg");
 
-                string avatarAssetPath = "Prefabs/Avatars/Male_Adult_02 Variant";
+                AvatarType avatarType = AvatarTypeConverter.FromString(syncCommunicationUser.avatarType);
+                string avatarAssetPath = AvatarTypeConverter.ToAssetPath(avatarType);
                 GameObject avatarModel = (GameObject)Resources.Load(avatarAssetPath);
                 avatarModel = Instantiate(avatarModel, transform);
                 avatarModel.AddComponent<VRIK>();

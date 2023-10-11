@@ -42,6 +42,7 @@ public class SyncCommunicationManager : MonoBehaviour
             udpUploadUser.user = new SyncCommunicationUser();
             udpUploadUser.user.userUuid = SingletonDatabase.Instance.myUserUuid;
             udpUploadUser.user.userName = SingletonDatabase.Instance.myUserName;
+            udpUploadUser.user.avatarType = AvatarTypeConverter.ToString(SingletonDatabase.Instance.avatarType);
             udpUploadUser.user.rehabilitationCondition = "SIMPLE";
             udpUploadUser.user.headPosture = myAvatarManager.HeadPosture;
             udpUploadUser.user.leftHandPosture = myAvatarManager.LeftHandPosture;
