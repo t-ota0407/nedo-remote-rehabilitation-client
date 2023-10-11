@@ -32,10 +32,11 @@ public class RehabilitationSceneManager : MonoBehaviour
         fadeManager = fadeCanvas.GetComponent<FadeManager>();
         loadingProgressManager = loadingCanvas.GetComponent<LoadingProgressManager>();
         myAvatarManager = myAvatar.GetComponent<MyAvatarManager>();
-        myAvatarManager.InitializeAvatar("Prefabs/Avatars/Female_Adult_01 Variant");
+
+        string avatarAssetPath = AvatarTypeConverter.ToAssetPath(SingletonDatabase.Instance.avatarType);
+        myAvatarManager.InitializeAvatar(avatarAssetPath);
 
         fadeManager.StartFadeIn();
-
 
         rehabilitationStartedAt = DateTime.Now;
 

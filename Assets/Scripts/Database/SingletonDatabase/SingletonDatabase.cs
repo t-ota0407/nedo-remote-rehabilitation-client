@@ -11,6 +11,7 @@ public class SingletonDatabase
     public string myUserName;
     public string currentRehabilitationCondition;
     public RehabilitationSaveDataContent loadedSaveData;
+    public AvatarType avatarType;
 
     public static SingletonDatabase Instance
     {

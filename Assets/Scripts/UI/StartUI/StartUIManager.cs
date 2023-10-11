@@ -18,6 +18,16 @@ public class StartUIManager : MonoBehaviour
     [SerializeField] private Button gamificationRehabilitationWithTemporaryAccountStartButton;
     [SerializeField] private Button communicationRehabilitationWithTemporaryAccountStartButton;
 
+    // [SerializeField] private Button avatarFemale1ButtonForStandardAccountMode;
+    // [SerializeField] private Button avatarFemale2ButtonForStandardAccountMode;
+    // [SerializeField] private Button avatarMale1ButtonForStandardAccountMode;
+    // [SerializeField] private Button avatarMale2ButtonForStandardAccountMode;
+
+    [SerializeField] private Button avatarFemale1ButtonForTemporaryAccountMode;
+    [SerializeField] private Button avatarFemale2ButtonForTemporaryAccountMode;
+    [SerializeField] private Button avatarMale1ButtonForTemporaryAccountMode;
+    [SerializeField] private Button avatarMale2ButtonForTemporaryAccountMode;
+
     [SerializeField] private TMP_InputField userNameInputField;
     [SerializeField] private TMP_InputField passwordInputField;
     [SerializeField] private Toggle userCreationToggle;
@@ -63,6 +73,8 @@ public class StartUIManager : MonoBehaviour
         {
             InitializeStandardAccountMode();
         }
+
+        SingletonDatabase.Instance.avatarType = AvatarType.AVATAR_FEMALE_1;
     }
 
     // Update is called once per frame
@@ -96,6 +108,11 @@ public class StartUIManager : MonoBehaviour
             DisableStartButtons();
             isClickedCommunicationRehabilitationWithTemporaryAccountStartButton = true;
         });
+
+        avatarFemale1ButtonForTemporaryAccountMode.onClick.AddListener(() => SelectAvatar(AvatarType.AVATAR_FEMALE_1, avatarFemale1ButtonForTemporaryAccountMode));
+        avatarFemale2ButtonForTemporaryAccountMode.onClick.AddListener(() => SelectAvatar(AvatarType.AVATAR_FEMALE_2, avatarFemale2ButtonForTemporaryAccountMode));
+        avatarMale1ButtonForTemporaryAccountMode.onClick.AddListener(() => SelectAvatar(AvatarType.AVATAR_MALE_1, avatarMale1ButtonForTemporaryAccountMode));
+        avatarMale2ButtonForTemporaryAccountMode.onClick.AddListener(() => SelectAvatar(AvatarType.AVATAR_MALE_2, avatarMale2ButtonForTemporaryAccountMode));
     }
 
     private void InitializeStandardAccountMode()
@@ -187,6 +204,28 @@ public class StartUIManager : MonoBehaviour
                     }
                     break;
                 }
+        }
+    }
+
+    private void SelectAvatar(AvatarType avatarType, Button buttonObj)
+    {
+        SingletonDatabase.Instance.avatarType = avatarType;
+
+        UnSelectAllAvatars();
+
+        GameObject backgroundObj = buttonObj.transform.Find("Background").gameObject;
+        Image image = backgroundObj.GetComponent<Image>();
+        image.color = new Color(1, 0.3f, 0.1f, 0.4f);
+    }
+
+    private void UnSelectAllAvatars()
+    {
+        Button[] allAvatarButtons = { avatarFemale1ButtonForTemporaryAccountMode, avatarFemale2ButtonForTemporaryAccountMode, avatarMale1ButtonForTemporaryAccountMode, avatarMale2ButtonForTemporaryAccountMode };
+        foreach (Button button in allAvatarButtons)
+        {
+            GameObject backgroundObj = button.transform.Find("Background").gameObject;
+            Image image = backgroundObj.GetComponent<Image>();
+            image.color = new Color(1, 1f, 1f, 0.4f);
         }
     }
 }
