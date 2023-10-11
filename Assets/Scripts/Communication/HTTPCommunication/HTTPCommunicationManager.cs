@@ -34,7 +34,8 @@ public class HTTPCommunicationManager : MonoBehaviour
 
     public IEnumerator PostUserSignup(string userName, string password, Action<string, string> userUuidAndTokenSetter, Action onSuccessed, Action onFailed)
     {
-        PostUserSignupRequestBody body = new(userName, password);
+        string avatarTypeString = AvatarTypeConverter.ToString(SingletonDatabase.Instance.avatarType);
+        PostUserSignupRequestBody body = new(userName, password, avatarTypeString);
 
         UnityWebRequest request = GenerateStandardPostRequest("/api/v1/user/signup", body);
 
@@ -58,7 +59,8 @@ public class HTTPCommunicationManager : MonoBehaviour
 
     public IEnumerator PostUserSignin(string userName, string password, Action<string, string> userUuidAndTokenSetter, Action onSuccessed, Action onFailed)
     {
-        PostUserSigninRequestBody body = new(userName, password);
+        string avatarTypeString = AvatarTypeConverter.ToString(SingletonDatabase.Instance.avatarType);
+        PostUserSigninRequestBody body = new(userName, password, avatarTypeString);
 
         UnityWebRequest request = GenerateStandardPostRequest("/api/v1/user/signin", body);
 
@@ -82,7 +84,8 @@ public class HTTPCommunicationManager : MonoBehaviour
 
     public IEnumerator PostUserSignupWithTemporaryAccount(string userName, Action<string, string> userUuidAndTokenSetter, Action onSuccessed, Action onFailed)
     {
-        PostUserSignupWithTemporaryAccountRequestBody body = new(userName);
+        string avatarTypeString = AvatarTypeConverter.ToString(SingletonDatabase.Instance.avatarType);
+        PostUserSignupWithTemporaryAccountRequestBody body = new(userName, avatarTypeString);
 
         UnityWebRequest request = GenerateStandardPostRequest("/api/v1/user/signup-with-temporary-account", body);
 

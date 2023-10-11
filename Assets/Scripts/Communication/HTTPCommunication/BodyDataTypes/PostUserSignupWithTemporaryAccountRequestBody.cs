@@ -7,9 +7,11 @@ using UnityEngine;
 public class PostUserSignupWithTemporaryAccountRequestBody
 {
     public string userName;
+    public string currentAvatarType;
 
-    public PostUserSignupWithTemporaryAccountRequestBody(string userName)
+    public PostUserSignupWithTemporaryAccountRequestBody(string userName, string currentAvatarType)
     {
         this.userName = userName;
+        this.currentAvatarType = currentAvatarType;
     }
 }
