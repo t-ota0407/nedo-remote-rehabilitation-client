@@ -1,9 +1,9 @@
 public class AvatarTypeConverter
 {
     private const string female1AssetPath = "Prefabs/Avatars/Female_Adult_01 Variant";
-    private const string female2AssetPath = "Prefabs/Avatars/Female_Adult_01 Variant";
+    private const string female2AssetPath = "Prefabs/Avatars/Female_Adult_07 Variant";
     private const string male1AssetPath = "Prefabs/Avatars/Male_Adult_02 Variant";
-    private const string male2AssetPath = "Prefabs/Avatars/Male_Adult_02 Variant";
+    private const string male2AssetPath = "Prefabs/Avatars/Male_Adult_07 Variant";
 
     private const string FEMALE_1_STRING = "AVATAR_FEMALE_1";
     private const string FEMALE_2_STRING = "AVATAR_FEMALE_2";
