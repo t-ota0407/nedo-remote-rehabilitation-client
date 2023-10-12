@@ -18,6 +18,7 @@ public class RehabilitationSceneManager : MonoBehaviour
     [SerializeField] private SyncCommunicationManager syncCommunicationManager;
 
     [SerializeField] private GameObject gameCanvas;
+    [SerializeField] private AllKnifeSharpeningSetupsManager allKnifeSharpeningSetupsManager;
 
     private FadeManager fadeManager;
     private LoadingProgressManager loadingProgressManager;
@@ -44,11 +45,14 @@ public class RehabilitationSceneManager : MonoBehaviour
         {
             case RehabilitationCondition.SIMPLE:
                 gameCanvas.SetActive(false);
+                allKnifeSharpeningSetupsManager.DeactivateGamificationSetups();
                 break;
             case RehabilitationCondition.GAMIFICATION:
+                allKnifeSharpeningSetupsManager.DeactivateSimpleSetups();
                 break;
             case RehabilitationCondition.COMMUNICATION:
                 syncCommunicationManager.StartSyncCommunication();
+                allKnifeSharpeningSetupsManager.DeactivateSimpleSetups();
                 break;
         }
     }
