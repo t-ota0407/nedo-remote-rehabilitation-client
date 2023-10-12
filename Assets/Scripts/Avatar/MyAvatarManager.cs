@@ -37,6 +37,8 @@ public class MyAvatarManager : MonoBehaviour
 
     [SerializeField] private HTTPCommunicationManager httpCommunicationManager;
 
+    [SerializeField] private AllKnifeSharpeningSetupsManager allKnifeSharpeningSetupsManager;
+
     private string uuid;
 
     private AvatarState avatarState;
@@ -138,7 +140,7 @@ public class MyAvatarManager : MonoBehaviour
     {
         switch (avatarState)
         {
-            case AvatarState.Walking: // Walking => KnifeSharpening
+            case AvatarState.Walking:
                 if (controllerInputManager == null)
                 {
                     controllerInputManager = transform.GetComponent<ControllerInputManager>();
@@ -154,6 +156,7 @@ public class MyAvatarManager : MonoBehaviour
                     avatarStateUpdatedAt = DateTime.Now;
                 }
 
+                // Walking => KnifeSharpening
                 if (controllerInputManager.IsPressedRightHandTrigger
                     && isInKnifeSharpeningSetupEnteringArea
                     && (DateTime.Now - avatarStateUpdatedAt).TotalMilliseconds > AVATAR_STATE_HOLDING_MILI_SECONDS)
@@ -170,11 +173,14 @@ public class MyAvatarManager : MonoBehaviour
 
                     avatarState = AvatarState.KnifeSharpening;
                     avatarStateUpdatedAt = DateTime.Now;
+
+                    allKnifeSharpeningSetupsManager.SetGamificationSetupsVisibility(false);
                 }
 
                 break;
 
-            case AvatarState.KnifeSharpening: // KnifeSharpening => Walking
+            case AvatarState.KnifeSharpening:
+                // KnifeSharpening => Walking
                 if (controllerInputManager.IsPressedRightHandTrigger
                     && (DateTime.Now - avatarStateUpdatedAt).TotalMilliseconds > AVATAR_STATE_HOLDING_MILI_SECONDS)
                 {
@@ -187,6 +193,8 @@ public class MyAvatarManager : MonoBehaviour
 
                     avatarState = AvatarState.Walking;
                     avatarStateUpdatedAt = DateTime.Now;
+
+                    allKnifeSharpeningSetupsManager.SetGamificationSetupsVisibility(true);
                 }
 
                 break;

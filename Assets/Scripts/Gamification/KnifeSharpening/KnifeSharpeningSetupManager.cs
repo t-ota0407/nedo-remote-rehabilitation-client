@@ -28,6 +28,8 @@ public class KnifeSharpeningSetupManager : MonoBehaviour
 
     private MeshRenderer enteringAreaMeshRenderer;
 
+    private Material beforeUnvisibleMaterial;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -61,5 +63,19 @@ public class KnifeSharpeningSetupManager : MonoBehaviour
                 enteringAreaMeshRenderer.material = emptyAreaMaterial;
             }
         }
+    }
+
+    public void SetVisibility(bool visibility)
+    {
+        if (visibility)
+        {
+            enteringAreaMeshRenderer.material = beforeUnvisibleMaterial;
+        }
+        else
+        {
+            beforeUnvisibleMaterial = enteringAreaMeshRenderer.material;
+            enteringAreaMeshRenderer.material = usedAreaMaterial;
+        }
+
     }
 }
