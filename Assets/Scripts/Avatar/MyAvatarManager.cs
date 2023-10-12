@@ -25,6 +25,9 @@ public class MyAvatarManager : MonoBehaviour
     [SerializeField] private GameObject leftRayInteractor;
     [SerializeField] private GameObject rightRayInteractor;
 
+    [SerializeField] private ActionBasedContinuousTurnProvider turnProvider;
+    [SerializeField] private ContinuousMoveProviderBase moveProvider;
+
     [SerializeField] private GameObject vrikHeadTarget;
     [SerializeField] private GameObject vrikLeftHandTarget;
     [SerializeField] private GameObject vrikRightHandTarget;
@@ -174,6 +177,9 @@ public class MyAvatarManager : MonoBehaviour
                     avatarState = AvatarState.KnifeSharpening;
                     avatarStateUpdatedAt = DateTime.Now;
 
+                    moveProvider.enabled = false;
+                    turnProvider.enabled = false;
+
                     allKnifeSharpeningSetupsManager.SetGamificationSetupsVisibility(false);
                 }
 
@@ -193,6 +199,9 @@ public class MyAvatarManager : MonoBehaviour
 
                     avatarState = AvatarState.Walking;
                     avatarStateUpdatedAt = DateTime.Now;
+
+                    moveProvider.enabled = true;
+                    turnProvider.enabled = true;
 
                     allKnifeSharpeningSetupsManager.SetGamificationSetupsVisibility(true);
                 }
