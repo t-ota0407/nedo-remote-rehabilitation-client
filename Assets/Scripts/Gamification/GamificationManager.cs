@@ -13,7 +13,7 @@ public class GamificationManager : MonoBehaviour
 
     private DateTime lastAutoIncrementedAt = new();
     private bool isLastAutoIncrementEvenNumber = true;
-    
+
     [SerializeField] private List<EnvironmentEvent> environmentEvents = new();
     [SerializeField] private List<LogEvent> logEvents = new();
     [SerializeField] private List<FacilityEvent> facilityEvents = new();
@@ -31,6 +31,9 @@ public class GamificationManager : MonoBehaviour
     private bool isAscending = true;
 
     private bool hasKnifeSharpenedDetected = false;
+
+    public int TotalReachingTimes { get { return totalReachingTimes; } }
+    private int totalReachingTimes = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -50,6 +53,7 @@ public class GamificationManager : MonoBehaviour
             if (isAscending && progress > 0.95f)
             {
                 targetKnifeSharpeningSetupManager.KnifeManager.IncrementReachingTimes();
+                totalReachingTimes += 1;
                 isAscending = false;
             }
             if (!isAscending && progress < 0.05f)

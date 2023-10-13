@@ -365,9 +365,9 @@ public class MyAvatarManager : MonoBehaviour
                 string rehabilitationCondition = SingletonDatabase.Instance.currentRehabilitationCondition;
                 string rehabilitationStartedAt = rehabilitationSceneManager.RehabilitationStartedAt.ToString("yyyy/MM/dd HH:mm:ss.ff");
                 string rehabilitationFinishedAt = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.ff");
-                int reachingTimes = 0; // todo: 適切な値を設定する
-                int sharpenedKnifeBefore = 0; // todo: 適切な値を設定する
-                int sharpenedKnifeAfter = 0; // todo: 適切な値を設定する
+                int reachingTimes = gamificationManager.TotalReachingTimes;
+                int sharpenedKnifeBefore = SingletonDatabase.Instance.loadedSaveData.sharpenedKnife;
+                int sharpenedKnifeAfter = gamificationManager.SharpenedKnife;
                 RehabilitationResultContent result = new(rehabilitationCondition, rehabilitationStartedAt, rehabilitationFinishedAt, reachingTimes, sharpenedKnifeBefore, sharpenedKnifeAfter);
 
                 atHandUIManager.SetButtonInteractability(false);
