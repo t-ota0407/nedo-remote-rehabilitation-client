@@ -370,7 +370,16 @@ public class MyAvatarManager : MonoBehaviour
                 int sharpenedKnifeAfter = 0; // todo: “KØ‚È’l‚ðÝ’è‚·‚é
                 RehabilitationResultContent result = new(rehabilitationCondition, rehabilitationStartedAt, rehabilitationFinishedAt, reachingTimes, sharpenedKnifeBefore, sharpenedKnifeAfter);
 
-                StartCoroutine(httpCommunicationManager.PostRehabilitationResult(userUuid, result, currentTaskProgress.FinishedTask, currentTaskProgress.FailedTask));
+                atHandUIManager.SetButtonInteractability(false);
+
+                StartCoroutine(httpCommunicationManager.PostRehabilitationResult(
+                    userUuid,
+                    result,
+                    currentTaskProgress.FinishedTask,
+                    () => {
+                        atHandUIManager.SetButtonInteractability(true);
+                        currentTaskProgress.FailedTask();
+                    }));
                 break;
 
             case FinishRehabilitationTask.POST_SAVE_DATA:
@@ -379,7 +388,14 @@ public class MyAvatarManager : MonoBehaviour
                 int sharpenedKnife = gamificationManager.SharpenedKnife;
                 RehabilitationSaveDataContent saveData = new(sharpenedKnife);
 
-                StartCoroutine(httpCommunicationManager.PostRehabilitationSave(userUuid, saveData, currentTaskProgress.FinishedTask, currentTaskProgress.FailedTask));
+                StartCoroutine(httpCommunicationManager.PostRehabilitationSave(
+                    userUuid,
+                    saveData,
+                    currentTaskProgress.FinishedTask,
+                    () => {
+                        atHandUIManager.SetButtonInteractability(true);
+                        currentTaskProgress.FailedTask();
+                    }));
                 break;
         }
     }

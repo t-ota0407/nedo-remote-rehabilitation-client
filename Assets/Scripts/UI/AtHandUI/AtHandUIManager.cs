@@ -68,4 +68,10 @@ public class AtHandUIManager : MonoBehaviour
     {
         canvas.enabled = false;
     }
+
+    public void SetButtonInteractability(bool isInteractable)
+    {
+        negativeButton.interactable = isInteractable;
+        positiveButton.interactable = isInteractable;
+    }
 }
