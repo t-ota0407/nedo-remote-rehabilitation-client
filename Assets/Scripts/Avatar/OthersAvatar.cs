@@ -13,7 +13,8 @@ public class OthersAvatar
     private GameObject vrikLeftRegTarget;
     private GameObject vrikRightRegTarget;
 
-    private DateTime lastUpdataTimestamp = DateTime.MinValue;
+    public DateTime LastUpdateTimestamp { get { return lastUpdataTimestamp; } }
+    private DateTime lastUpdataTimestamp = DateTime.Now;
 
     public OthersAvatar(string userUuid)
     {
@@ -56,5 +57,11 @@ public class OthersAvatar
 
             lastUpdataTimestamp = timestamp;
         }
+    }
+
+    public void DeleteAvatar()
+    {
+        // todo: パフォーマンス最適化
+        this.avatarModel.SetActive(false);
     }
 }

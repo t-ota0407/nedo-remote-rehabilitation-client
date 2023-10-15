@@ -7,6 +7,8 @@ using RootMotion.FinalIK;
 
 public class OthersAvatarManager : MonoBehaviour
 {
+    private const float AVATAR_DELETE_WAITING_MILISECONDS = 15000;
+
     private List<OthersAvatar> activeOthersAvatars = new();
 
     private Queue<UDPDownloadUser> othersAvatarUpdateQueue = new();
@@ -25,7 +27,9 @@ public class OthersAvatarManager : MonoBehaviour
             UDPDownloadUser udpDownloadUser = othersAvatarUpdateQueue.Dequeue();
 
             SyncCommunicationUser syncCommunicationUser = udpDownloadUser.user;
-            DateTime timestamp = ParseDateTimeString(udpDownloadUser.timestamp);
+
+            // 一旦クライアントで生成した値を使うことにする。
+            DateTime timestamp = DateTime.Now; // ParseDateTimeString(udpDownloadUser.timestamp);
 
             bool isAvatarExists = activeOthersAvatars.Any(avatar => avatar.userUuid == syncCommunicationUser.userUuid);
 
@@ -64,6 +68,20 @@ public class OthersAvatarManager : MonoBehaviour
                     vrikRightHandTarget,
                     vrikLeftRegTarget,
                     vrikRightRegTarget);
+            }
+        }
+
+        foreach (OthersAvatar activeOthersAvatar in activeOthersAvatars)
+        {
+            double notUpdatedDuration = (DateTime.Now - activeOthersAvatar.LastUpdateTimestamp).TotalMilliseconds;
+            Debug.Log(notUpdatedDuration);
+            if (notUpdatedDuration > AVATAR_DELETE_WAITING_MILISECONDS)
+            {
+                activeOthersAvatar.DeleteAvatar();
+                
+                // invalid operationのためとりあえずコメントアウト。
+                // パフォーマンス的にはちゃんと取り除くのがベスト。
+                // activeOthersAvatars.Remove(activeOthersAvatar);
             }
         }
     }
