@@ -39,6 +39,7 @@ public class MyAvatarManager : MonoBehaviour
     [SerializeField] private AtHandUIManager atHandUIManager;
 
     [SerializeField] private HTTPCommunicationManager httpCommunicationManager;
+    [SerializeField] private SyncCommunicationManager syncCommunicationManager;
 
     [SerializeField] private AllKnifeSharpeningSetupsManager allKnifeSharpeningSetupsManager;
 
@@ -324,7 +325,11 @@ public class MyAvatarManager : MonoBehaviour
                     }
                 }
                 break;
-
+            case FinishRehabilitationTask.STOP_SYNC_COMMUNICATION:
+                currentTaskProgress.StartedTask();
+                syncCommunicationManager.StopSyncCommunication();
+                currentTaskProgress.FinishedTask();
+                break;
             case FinishRehabilitationTask.SCENE_LOADING:
                 if (currentTaskProgress.progress == Progress.PENDING)
                 {

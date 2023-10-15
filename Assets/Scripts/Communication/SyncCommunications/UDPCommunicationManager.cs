@@ -42,6 +42,10 @@ public class UDPCommunicationManager
         Debug.Log("listen");
     }
 
+    public void Close() {
+        udpClient.Close();
+    }
+
     //private void OnReceived(IAsyncResult result)
     //{
     //    UdpClient receivingUdpClient = (UdpClient)result.AsyncState;

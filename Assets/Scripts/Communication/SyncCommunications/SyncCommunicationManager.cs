@@ -83,4 +83,11 @@ public class SyncCommunicationManager : MonoBehaviour
 
         receivingUdpClient.BeginReceive(OnUDPReceived, receivingUdpClient);
     }
+
+    public void StopSyncCommunication()
+    {
+        isSyncCommunicating = false;
+
+        udpCommunicationManager.Close();
+    }
 }
