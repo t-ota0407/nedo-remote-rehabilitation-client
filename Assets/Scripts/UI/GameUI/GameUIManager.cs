@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class GameUIManager : MonoBehaviour
 {
-    private const int LogLineMaxLength = 21;
+    private const int LogLineMaxLength = 20;
     private const float CanvasRotationSpeed = 1.5f;
 
     [SerializeField] private TextMeshProUGUI sharpenedKnifeText;
