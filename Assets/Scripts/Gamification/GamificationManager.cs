@@ -24,6 +24,8 @@ public class GamificationManager : MonoBehaviour
 
     [SerializeField] private GameUIManager gameUIManager;
 
+    [SerializeField] private SoundManager soundManager;
+
     private readonly List<ReleasedFacility> releacedFacilities = new();
 
     private KnifeSharpeningSetupManager targetKnifeSharpeningSetupManager;
@@ -65,6 +67,8 @@ public class GamificationManager : MonoBehaviour
             {
                 sharpenedKnife += REACHING_KNIFE_INCREMENT_COEFFICIENT;
                 gameUIManager.UpdateSharpenedKnife(sharpenedKnife);
+
+                soundManager.PlayCoinSE();
 
                 hasKnifeSharpenedDetected = true;
             }
@@ -227,6 +231,8 @@ public class GamificationManager : MonoBehaviour
                 gameUIManager.UpdateAutoIncrementSharpenedKnifePerSecond(autoIncrementSharpenedKnifePerSecond);
 
                 facilityEvent.isApplied = true;
+
+                soundManager.PlayWindChimeSE();
             }
             else
             {
