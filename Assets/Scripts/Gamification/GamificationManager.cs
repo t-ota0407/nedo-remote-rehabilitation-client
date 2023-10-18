@@ -158,6 +158,14 @@ public class GamificationManager : MonoBehaviour
                 {
                     case EnvironmentEventType.Appear:
                         environmentEvent.targetObject.SetActive(true);
+
+                        GameObject particle = (environmentEvent.targetObject.gameObject.name.Contains("Building")) ? (GameObject)Resources.Load("Prefabs/Particles/ParticleBuilding")
+                                : (environmentEvent.targetObject.gameObject.name.Contains("House")) ? (GameObject)Resources.Load("Prefabs/Particles/ParticleHouse")
+                                : (GameObject)Resources.Load("Prefabs/Particles/ParticleTree");
+                        Vector3 spawnPosition = environmentEvent.targetObject.gameObject.transform.position;
+                        Quaternion spawnDirection = Quaternion.AngleAxis(-90, Vector3.right);
+                        particle = Instantiate(particle, spawnPosition, spawnDirection);
+
                         break;
 
                     case EnvironmentEventType.Disappear:
