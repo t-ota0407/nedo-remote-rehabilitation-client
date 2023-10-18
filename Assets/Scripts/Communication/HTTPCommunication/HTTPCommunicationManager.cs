@@ -14,7 +14,7 @@ public class HTTPCommunicationManager : MonoBehaviour
 
     void Awake()
     {
-        this.baseURL = "http://" + Config.serverIP + ":" + Config.serverHttpPort;
+        this.baseURL = "http://" + Secret.serverIP + ":" + Secret.serverHttpPort;
     }
 
     void Start()

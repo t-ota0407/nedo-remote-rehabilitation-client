@@ -18,7 +18,7 @@ public class SyncCommunicationManager : MonoBehaviour
 
     void Awake()
     {
-        udpCommunicationManager = new(Config.serverIP, Config.serverUdpPort, Config.clientUdpPort);
+        udpCommunicationManager = new(Secret.serverIP, Secret.serverUdpPort, Secret.clientUdpPort);
     }
 
     // Start is called before the first frame update
@@ -71,7 +71,6 @@ public class SyncCommunicationManager : MonoBehaviour
         try
         {
             UDPDownloadUser udpDownloadUserData = JsonUtility.FromJson<UDPDownloadUser>(message);
-            Debug.Log("parse ok");
 
             othersAvatarManager.EnqueueOthersAvatarUpdate(udpDownloadUserData);
         }
