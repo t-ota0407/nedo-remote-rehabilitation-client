@@ -45,6 +45,7 @@ public class MyAvatarManager : MonoBehaviour
 
     private string uuid;
 
+    public AvatarState AvatarState { get { return avatarState; } }
     private AvatarState avatarState;
     private DateTime avatarStateUpdatedAt;
 
