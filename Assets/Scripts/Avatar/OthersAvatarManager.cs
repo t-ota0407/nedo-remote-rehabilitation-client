@@ -71,17 +71,17 @@ public class OthersAvatarManager : MonoBehaviour
             }
         }
 
-        foreach (OthersAvatar activeOthersAvatar in activeOthersAvatars)
+        int listLength = activeOthersAvatars.Count;
+        for (var i = 0; i < listLength; i++)
         {
+            OthersAvatar activeOthersAvatar = activeOthersAvatars[i];
+            
             double notUpdatedDuration = (DateTime.Now - activeOthersAvatar.LastUpdateTimestamp).TotalMilliseconds;
-            Debug.Log(notUpdatedDuration);
             if (notUpdatedDuration > AVATAR_DELETE_WAITING_MILISECONDS)
             {
                 activeOthersAvatar.DeleteAvatar();
-                
-                // invalid operationのためとりあえずコメントアウト。
-                // パフォーマンス的にはちゃんと取り除くのがベスト。
-                // activeOthersAvatars.Remove(activeOthersAvatar);
+                activeOthersAvatars.RemoveAt(i);
+                listLength -= 1;
             }
         }
     }

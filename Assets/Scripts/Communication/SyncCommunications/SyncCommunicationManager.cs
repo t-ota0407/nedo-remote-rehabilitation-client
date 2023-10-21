@@ -66,8 +66,6 @@ public class SyncCommunicationManager : MonoBehaviour
         byte[] getByte = receivingUdpClient.EndReceive(result, ref ipEndPoint);
         string message = Encoding.UTF8.GetString(getByte);
 
-        Debug.Log(message);
-
         try
         {
             UDPDownloadUser udpDownloadUserData = JsonUtility.FromJson<UDPDownloadUser>(message);
