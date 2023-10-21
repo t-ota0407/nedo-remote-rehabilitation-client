@@ -43,7 +43,6 @@ public class MyAvatarManager : MonoBehaviour
 
     [SerializeField] private AllKnifeSharpeningSetupsManager allKnifeSharpeningSetupsManager;
 
-    private string uuid;
 
     public AvatarState AvatarState { get { return avatarState; } }
     private AvatarState avatarState;
@@ -59,11 +58,6 @@ public class MyAvatarManager : MonoBehaviour
     private KnifeSharpeningSetupManager targetSharpeningSetupManager;
 
     private List<TaskProgress<FinishRehabilitationTask>> finishRehabilitationTaskProgressList;
-
-    void Awake()
-    {
-        uuid = Guid.NewGuid().ToString();
-    }
 
     // Start is called before the first frame update
     void Start()
@@ -364,7 +358,6 @@ public class MyAvatarManager : MonoBehaviour
         switch (currentTaskProgress.task)
         {
             case FinishRehabilitationTask.POST_RESULT:
-                Debug.Log("POST_RESULT");
                 string userUuid = SingletonDatabase.Instance.myUserUuid;
 
                 // todo: 一回通信失敗とかになっても大丈夫ようにキャッシュする
@@ -389,7 +382,6 @@ public class MyAvatarManager : MonoBehaviour
                 break;
 
             case FinishRehabilitationTask.POST_SAVE_DATA:
-                Debug.Log("POST_SAVE_DATA");
                 userUuid = SingletonDatabase.Instance.myUserUuid;
                 int sharpenedKnife = gamificationManager.SharpenedKnife;
                 RehabilitationSaveDataContent saveData = new(sharpenedKnife);
