@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class SingletonDatabase
 {
     private static SingletonDatabase instance;
@@ -9,7 +5,7 @@ public class SingletonDatabase
     public string myUserUuid;
     public string myToken;
     public string myUserName;
-    public string currentRehabilitationCondition;
+    public RehabilitationCondition currentRehabilitationCondition;
     public RehabilitationSaveDataContent loadedSaveData;
     public AvatarType avatarType;
 
