@@ -43,7 +43,6 @@ public class MyAvatarManager : MonoBehaviour
 
     [SerializeField] private AllKnifeSharpeningSetupsManager allKnifeSharpeningSetupsManager;
 
-
     public AvatarState AvatarState { get { return avatarState; } }
     private AvatarState avatarState;
     private DateTime avatarStateUpdatedAt;
@@ -81,7 +80,7 @@ public class MyAvatarManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "KnifeSharpeningSetup")
+        if (other.tag == ConstantObjectTag.KNIFE_SHARPENING_SETUP)
         {
             isInKnifeSharpeningSetupEnteringArea = true;
             targetSharpeningSetupManager = other.transform.GetComponent<KnifeSharpeningSetupManager>();
@@ -90,7 +89,7 @@ public class MyAvatarManager : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.tag == "KnifeSharpeningSetup")
+        if (other.tag == ConstantObjectTag.KNIFE_SHARPENING_SETUP)
         {
             isInKnifeSharpeningSetupEnteringArea = false;
         }
