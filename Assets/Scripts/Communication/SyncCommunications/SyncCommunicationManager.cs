@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -43,7 +40,7 @@ public class SyncCommunicationManager : MonoBehaviour
             udpUploadUser.user.userUuid = SingletonDatabase.Instance.myUserUuid;
             udpUploadUser.user.userName = SingletonDatabase.Instance.myUserName;
             udpUploadUser.user.avatarType = AvatarTypeConverter.ToString(SingletonDatabase.Instance.avatarType);
-            udpUploadUser.user.rehabilitationCondition = "SIMPLE";
+            udpUploadUser.user.rehabilitationCondition = SingletonDatabase.Instance.currentRehabilitationCondition;
             udpUploadUser.user.avatarState = AvatarStateConverter.ToString(myAvatarManager.AvatarState);
             udpUploadUser.user.headPosture = myAvatarManager.HeadPosture;
             udpUploadUser.user.leftHandPosture = myAvatarManager.LeftHandPosture;
