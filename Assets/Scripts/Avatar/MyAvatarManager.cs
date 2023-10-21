@@ -361,7 +361,7 @@ public class MyAvatarManager : MonoBehaviour
                 string userUuid = SingletonDatabase.Instance.myUserUuid;
 
                 // todo: 一回通信失敗とかになっても大丈夫ようにキャッシュする
-                string rehabilitationCondition = SingletonDatabase.Instance.currentRehabilitationCondition;
+                string rehabilitationCondition = RehabilitationConditionConverter.ToString(SingletonDatabase.Instance.currentRehabilitationCondition);
                 string rehabilitationStartedAt = rehabilitationSceneManager.RehabilitationStartedAt.ToString("yyyy/MM/dd HH:mm:ss.ff");
                 string rehabilitationFinishedAt = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.ff");
                 int reachingTimes = gamificationManager.TotalReachingTimes;
