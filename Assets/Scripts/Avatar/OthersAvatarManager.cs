@@ -50,7 +50,6 @@ public class OthersAvatarManager : MonoBehaviour
                 GameObject vrikLeftRegTarget = new GameObject($"{othersAvatar.userUuid}_leftReg");
                 GameObject vrikRightRegTarget = new GameObject($"{othersAvatar.userUuid}_rightReg");
 
-                Debug.Log(syncCommunicationUser.avatarType + syncCommunicationUser.userUuid);
                 AvatarType avatarType = AvatarTypeConverter.FromString(syncCommunicationUser.avatarType);
                 string avatarAssetPath = AvatarTypeConverter.ToAssetPath(avatarType);
                 GameObject avatarModel = (GameObject)Resources.Load(avatarAssetPath);

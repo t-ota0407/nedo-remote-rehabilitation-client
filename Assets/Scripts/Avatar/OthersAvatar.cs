@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using RootMotion.FinalIK;
 
 public class OthersAvatar
 {
@@ -53,6 +54,7 @@ public class OthersAvatar
             vrikRightHandTarget.transform.position = rightHandPosture.position;
             vrikRightHandTarget.transform.rotation = Quaternion.Euler(rightHandPosture.rotation);
 
+            VRIK vrik = avatarModel.GetComponent<VRIK>();
             if (AvatarStateConverter.FromString(syncCommunicationUser.avatarState) == AvatarState.KnifeSharpening)
             {
                 Posture leftLegPosture = syncCommunicationUser.leftLegPosture;
@@ -62,6 +64,18 @@ public class OthersAvatar
                 Posture rightLegPosture = syncCommunicationUser.rightLegPosture;
                 vrikRightLegTarget.transform.position = rightLegPosture.position;
                 vrikRightLegTarget.transform.rotation = Quaternion.Euler(rightLegPosture.rotation);
+
+                vrik.solver.leftLeg.target = vrikLeftLegTarget.transform;
+                vrik.solver.leftLeg.positionWeight = 0.9f;
+                vrik.solver.rightLeg.target = vrikRightLegTarget.transform;
+                vrik.solver.rightLeg.positionWeight = 0.9f;
+            }
+            else
+            {
+                vrik.solver.leftLeg.target = null;
+                vrik.solver.leftLeg.positionWeight = 0;
+                vrik.solver.rightLeg.target = null;
+                vrik.solver.rightLeg.positionWeight = 0;
             }
 
             lastUpdataTimestamp = timestamp;
