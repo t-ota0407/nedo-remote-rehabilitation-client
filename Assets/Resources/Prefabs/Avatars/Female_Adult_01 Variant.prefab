@@ -81,4 +81,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02508072fb1f76f45a24d25fceb63d8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  standardCameraHeight: 1.51
+  standardCameraHeight: 1.49
