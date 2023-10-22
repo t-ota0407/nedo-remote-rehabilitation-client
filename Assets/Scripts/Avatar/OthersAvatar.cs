@@ -2,9 +2,9 @@ using System;
 using UnityEngine;
 using RootMotion.FinalIK;
 
-public class OthersAvatar
+public class OthersAvatar : MonoBehaviour
 {
-    public readonly string userUuid;
+    public string userUuid;
 
     private GameObject avatarModel;
 
@@ -17,9 +17,19 @@ public class OthersAvatar
     public DateTime LastUpdateTimestamp { get { return lastUpdataTimestamp; } }
     private DateTime lastUpdataTimestamp = DateTime.Now;
 
-    public OthersAvatar(string userUuid)
+    private KnifeSharpeningSetupManager targetSharpeningSetupManager;
+
+    void Start()
     {
-        this.userUuid = userUuid;
+        
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == ConstantObjectTag.KNIFE_SHARPENING_SETUP)
+        {
+            targetSharpeningSetupManager = other.transform.GetComponent<KnifeSharpeningSetupManager>();
+        }
     }
 
     public void InitializeAvatar(
@@ -69,6 +79,20 @@ public class OthersAvatar
                 vrik.solver.leftLeg.positionWeight = 0.9f;
                 vrik.solver.rightLeg.target = vrikRightLegTarget.transform;
                 vrik.solver.rightLeg.positionWeight = 0.9f;
+
+                if (targetSharpeningSetupManager != null)
+                {
+                    Debug.Log("null‚Å‚Í‚È‚¢");
+                    float reachingProgress = syncCommunicationUser.reachingProgress;
+                    Vector3 minReachingPosition = targetSharpeningSetupManager.MinReachingOrigin.transform.position;
+                    Vector3 maxReachingPosition = targetSharpeningSetupManager.MaxReachingOrigin.transform.position;
+                    Vector3 reachingTargetPosition = Vector3.Lerp(minReachingPosition, maxReachingPosition, reachingProgress);
+
+                    Debug.Log(reachingProgress);
+                    GameObject knifeObject = targetSharpeningSetupManager.KnifeManager.gameObject;
+                    knifeObject.transform.position = reachingTargetPosition;
+                    knifeObject.transform.localPosition = knifeObject.transform.localPosition + new Vector3(0, -0.04f, -0.24f);
+                }
             }
             else
             {

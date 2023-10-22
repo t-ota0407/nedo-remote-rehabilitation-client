@@ -41,7 +41,13 @@ public class OthersAvatarManager : MonoBehaviour
             }
             else
             {
-                OthersAvatar othersAvatar = new(syncCommunicationUser.userUuid);
+                AvatarType avatarType = AvatarTypeConverter.FromString(syncCommunicationUser.avatarType);
+                string avatarAssetPath = AvatarTypeConverter.ToAssetPath(avatarType);
+                GameObject avatarModel = (GameObject)Resources.Load(avatarAssetPath);
+                avatarModel = Instantiate(avatarModel, transform);
+
+                OthersAvatar othersAvatar = avatarModel.gameObject.AddComponent<OthersAvatar>();
+                othersAvatar.userUuid = syncCommunicationUser.userUuid;
                 activeOthersAvatars.Add(othersAvatar);
 
                 GameObject vrikHeadTarget = new GameObject($"{othersAvatar.userUuid}_head");
@@ -50,10 +56,6 @@ public class OthersAvatarManager : MonoBehaviour
                 GameObject vrikLeftRegTarget = new GameObject($"{othersAvatar.userUuid}_leftReg");
                 GameObject vrikRightRegTarget = new GameObject($"{othersAvatar.userUuid}_rightReg");
 
-                AvatarType avatarType = AvatarTypeConverter.FromString(syncCommunicationUser.avatarType);
-                string avatarAssetPath = AvatarTypeConverter.ToAssetPath(avatarType);
-                GameObject avatarModel = (GameObject)Resources.Load(avatarAssetPath);
-                avatarModel = Instantiate(avatarModel, transform);
                 avatarModel.AddComponent<VRIK>();
                 VRIK vrik = avatarModel.GetComponent<VRIK>();
                 vrik.solver.spine.headTarget = vrikHeadTarget.transform;
