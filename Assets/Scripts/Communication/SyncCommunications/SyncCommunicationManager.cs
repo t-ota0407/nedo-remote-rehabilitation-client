@@ -42,6 +42,7 @@ public class SyncCommunicationManager : MonoBehaviour
             udpUploadUser.user.avatarType = AvatarTypeConverter.ToString(SingletonDatabase.Instance.avatarType);
             udpUploadUser.user.rehabilitationCondition = RehabilitationConditionConverter.ToString(SingletonDatabase.Instance.currentRehabilitationCondition);
             udpUploadUser.user.avatarState = AvatarStateConverter.ToString(myAvatarManager.AvatarState);
+            udpUploadUser.user.reachingProgress = myAvatarManager.ReachingProgress();
             udpUploadUser.user.headPosture = myAvatarManager.HeadPosture;
             udpUploadUser.user.leftHandPosture = myAvatarManager.LeftHandPosture;
             udpUploadUser.user.rightHandPosture = myAvatarManager.RightHandPosture;
@@ -65,8 +66,6 @@ public class SyncCommunicationManager : MonoBehaviour
 
         byte[] getByte = receivingUdpClient.EndReceive(result, ref ipEndPoint);
         string message = Encoding.UTF8.GetString(getByte);
-
-        Debug.Log(message);
 
         try
         {

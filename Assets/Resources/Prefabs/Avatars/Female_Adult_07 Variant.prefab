@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: a6675dc920a67094792a0fe22e09ea8d, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a6675dc920a67094792a0fe22e09ea8d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -63,6 +63,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a6675dc920a67094792a0fe22e09ea8d, type: 3}
       insertIndex: -1
       addedObject: {fileID: -2748802080964317049}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a6675dc920a67094792a0fe22e09ea8d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2101231591215384108}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a6675dc920a67094792a0fe22e09ea8d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7432472495995565272}
   m_SourcePrefab: {fileID: 100100000, guid: a6675dc920a67094792a0fe22e09ea8d, type: 3}
 --- !u!1 &7148273715690513808 stripped
 GameObject:
@@ -81,4 +87,54 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02508072fb1f76f45a24d25fceb63d8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  standardCameraHeight: 1.6
+  standardCameraHeight: 1.52
+--- !u!136 &2101231591215384108
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7148273715690513808}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.15
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
+--- !u!54 &7432472495995565272
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7148273715690513808}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0

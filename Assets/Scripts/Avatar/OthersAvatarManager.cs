@@ -41,7 +41,13 @@ public class OthersAvatarManager : MonoBehaviour
             }
             else
             {
-                OthersAvatar othersAvatar = new(syncCommunicationUser.userUuid);
+                AvatarType avatarType = AvatarTypeConverter.FromString(syncCommunicationUser.avatarType);
+                string avatarAssetPath = AvatarTypeConverter.ToAssetPath(avatarType);
+                GameObject avatarModel = (GameObject)Resources.Load(avatarAssetPath);
+                avatarModel = Instantiate(avatarModel, transform);
+
+                OthersAvatar othersAvatar = avatarModel.gameObject.AddComponent<OthersAvatar>();
+                othersAvatar.userUuid = syncCommunicationUser.userUuid;
                 activeOthersAvatars.Add(othersAvatar);
 
                 GameObject vrikHeadTarget = new GameObject($"{othersAvatar.userUuid}_head");
@@ -50,11 +56,6 @@ public class OthersAvatarManager : MonoBehaviour
                 GameObject vrikLeftRegTarget = new GameObject($"{othersAvatar.userUuid}_leftReg");
                 GameObject vrikRightRegTarget = new GameObject($"{othersAvatar.userUuid}_rightReg");
 
-                Debug.Log(syncCommunicationUser.avatarType + syncCommunicationUser.userUuid);
-                AvatarType avatarType = AvatarTypeConverter.FromString(syncCommunicationUser.avatarType);
-                string avatarAssetPath = AvatarTypeConverter.ToAssetPath(avatarType);
-                GameObject avatarModel = (GameObject)Resources.Load(avatarAssetPath);
-                avatarModel = Instantiate(avatarModel, transform);
                 avatarModel.AddComponent<VRIK>();
                 VRIK vrik = avatarModel.GetComponent<VRIK>();
                 vrik.solver.spine.headTarget = vrikHeadTarget.transform;
@@ -71,17 +72,17 @@ public class OthersAvatarManager : MonoBehaviour
             }
         }
 
-        foreach (OthersAvatar activeOthersAvatar in activeOthersAvatars)
+        int listLength = activeOthersAvatars.Count;
+        for (var i = 0; i < listLength; i++)
         {
+            OthersAvatar activeOthersAvatar = activeOthersAvatars[i];
+            
             double notUpdatedDuration = (DateTime.Now - activeOthersAvatar.LastUpdateTimestamp).TotalMilliseconds;
-            Debug.Log(notUpdatedDuration);
             if (notUpdatedDuration > AVATAR_DELETE_WAITING_MILISECONDS)
             {
                 activeOthersAvatar.DeleteAvatar();
-                
-                // invalid operationのためとりあえずコメントアウト。
-                // パフォーマンス的にはちゃんと取り除くのがベスト。
-                // activeOthersAvatars.Remove(activeOthersAvatar);
+                activeOthersAvatars.RemoveAt(i);
+                listLength -= 1;
             }
         }
     }
