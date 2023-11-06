@@ -16,12 +16,16 @@
 ### PCとリンクケーブルをつないだまま動作させる場合
 1. OculusアプリとLinkケーブルを使ってHMDをPCにQuest Linkで接続してください。
 1. Unityでプロジェクトを開いてください。
+1. Assets/Secret.cs.exampleの内容を複製して、Assets/Secret.csを作成してください。
+1. Secret.csの内容を適切な値に書き換えてください。
 1. Unity Editor上でAsset/Scenes/Startのシーンを開いてください。
 1. Playボタンを押してシステムを起動させてください。
 1. 操作方法については[こちら](#操作方法)を参照してください。
 
 ### HMDのスタンドアローンで動作させる場合
 1. Unityでプロジェクトを開いてください。
+1. Assets/Secret.cs.exampleの内容を複製して、Assets/Secret.csを作成してください。
+1. Secret.csの内容を適切な値に書き換えてください。
 1. File / Build SettingsからBuild Settingsを開いてください。
 1. Buildを押してビルドを実行してください。
 1. .apkファイルがビルドされたら、ファイルを任意の場所に保存してください。
