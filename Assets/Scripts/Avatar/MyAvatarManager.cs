@@ -63,6 +63,8 @@ public class MyAvatarManager : MonoBehaviour
     {
         avatarState = AvatarState.Walking;
 
+        ResetCameraHeight();
+
         SetControllerAndRaysVisibility(false);
 
         finishRehabilitationTaskProgressList = TaskProgress<FinishRehabilitationTask>.GenerateTaskProgressList();
@@ -256,10 +258,7 @@ public class MyAvatarManager : MonoBehaviour
             case AvatarState.Walking:
                 if (controllerInputManager.IsPressedButtonA)
                 {
-                    avatarCalibration.seatedHeadHeight = hmd.transform.localPosition.y;
-
-                    float offsetHeight = msrbAvatarConfiguration.StandardCameraHeight - avatarCalibration.seatedHeadHeight;
-                    transform.localPosition = new Vector3(0, offsetHeight, 0);
+                    ResetCameraHeight();
                 }
 
                 break;
@@ -332,6 +331,13 @@ public class MyAvatarManager : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    private void ResetCameraHeight()
+    {
+        avatarCalibration.seatedHeadHeight = hmd.transform.localPosition.y;
+        float offsetHeight = msrbAvatarConfiguration.StandardCameraHeight - avatarCalibration.seatedHeadHeight;
+        transform.localPosition = new Vector3(0, offsetHeight, 0);
     }
 
     private void SetControllerAndRaysVisibility(bool visibility)

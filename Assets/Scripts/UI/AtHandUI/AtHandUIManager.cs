@@ -24,7 +24,7 @@ public class AtHandUIManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        transform.localPosition = new Vector3(0, 0.9f, 0.9f);
+        transform.localPosition = new Vector3(0, 0, 0.8f);
         transform.localRotation = Quaternion.Euler(new Vector3(30, 0, 0));
 
         canvas = GetComponent<Canvas>();
