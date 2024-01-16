@@ -81,6 +81,8 @@ public class GamificationManager : MonoBehaviour
             }
 
             CheckSharpenedKnifeAutoIncrement();
+
+            UpdateKnifeSharpeningTarget();
         }
 
         CheckEnvironmentEvent();
@@ -112,6 +114,32 @@ public class GamificationManager : MonoBehaviour
         GameObject knifeObject = targetKnifeSharpeningSetupManager.KnifeManager.gameObject;
         knifeObject.transform.position = reachingTargetPosition;
         knifeObject.transform.localPosition = knifeObject.transform.localPosition + new Vector3(0, -0.04f, -0.24f);
+    }
+
+    private void UpdateKnifeSharpeningTarget()
+    {
+        environmentEvents = environmentEvents
+            .OrderBy(environmentEvent => environmentEvent.sharpenedKnifeForTrigger)
+            .ToList();
+
+        int previousEnvironmentEventSharpenedKnifeForTrigger = 0;
+        foreach (EnvironmentEvent environmentEvent in environmentEvents)
+        {
+            if (environmentEvent.isApplied)
+            {
+                previousEnvironmentEventSharpenedKnifeForTrigger = environmentEvent.sharpenedKnifeForTrigger;
+                continue;
+            }
+            else
+            {
+                int current = sharpenedKnife;
+                int target = environmentEvent.sharpenedKnifeForTrigger;
+                int offset = previousEnvironmentEventSharpenedKnifeForTrigger;
+
+                gameUIManager.UpdateTargetSharpenedKnifeUI(current, target, offset);
+                break;
+            }
+        }
     }
 
     private void CheckSharpenedKnifeAutoIncrement()

@@ -26,6 +26,8 @@ public class GameUIManager : MonoBehaviour
     [SerializeField] private FacilityCardManager alchemistCardManager;
     [SerializeField] private FacilityCardManager wizardCardManager;
 
+    [SerializeField] private Image gaugeImage;
+
     private bool isRotating;
     private Quaternion rotationTargetPosture;
 
@@ -120,5 +122,11 @@ public class GameUIManager : MonoBehaviour
             fifthLineLogText.text = newLine1;
             sixthLineLogText.text = newLine2;
         }
+    }
+
+    public void UpdateTargetSharpenedKnifeUI(int currentNum, int targetNum, int offset)
+    {
+        float fillAmount = (float)(currentNum - offset) / (targetNum - offset);
+        gaugeImage.fillAmount = fillAmount;
     }
 }
