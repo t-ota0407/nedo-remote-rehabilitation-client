@@ -17,6 +17,7 @@ public class GamificationManager : MonoBehaviour
     [SerializeField] private List<EnvironmentEvent> environmentEvents = new();
     [SerializeField] private List<LogEvent> logEvents = new();
     [SerializeField] private List<FacilityEvent> facilityEvents = new();
+    [SerializeField] private List<BirdViewUpdateEvent> birdViewUpdateEvents = new();
 
     [SerializeField] private List<FacilityAutoIncrementAmount> facilityAutoIncrementAmounts = new();
 
@@ -88,6 +89,7 @@ public class GamificationManager : MonoBehaviour
         CheckEnvironmentEvent();
         CheckLogEvent();
         CheckFacilityEvent();
+        CheckBirdViewUpdateEvents();
     }
 
     public void ContinueGame(KnifeSharpeningSetupManager targetSharpeningSetup)
@@ -273,6 +275,25 @@ public class GamificationManager : MonoBehaviour
             else
             {
                 break;
+            }
+        }
+    }
+
+    private void CheckBirdViewUpdateEvents()
+    {
+        foreach (var birdViewUpdateEvent in birdViewUpdateEvents)
+        {
+            if (!birdViewUpdateEvent.isApplied)
+            {
+                if(birdViewUpdateEvent.requiredSharpenedKnife <= sharpenedKnife)
+                {
+                    gameUIManager.UpdateToNextBirdView();
+                    birdViewUpdateEvent.isApplied = true;
+                }
+                else
+                {
+                    return;
+                }
             }
         }
     }

@@ -43,6 +43,8 @@ public class MyAvatarManager : MonoBehaviour
 
     [SerializeField] private AllKnifeSharpeningSetupsManager allKnifeSharpeningSetupsManager;
 
+    [SerializeField] private SpawnManager spawnManager;
+
     public AvatarState AvatarState { get { return avatarState; } }
     private AvatarState avatarState;
     private DateTime avatarStateUpdatedAt;
@@ -68,6 +70,17 @@ public class MyAvatarManager : MonoBehaviour
         SetControllerAndRaysVisibility(false);
 
         finishRehabilitationTaskProgressList = TaskProgress<FinishRehabilitationTask>.GenerateTaskProgressList();
+
+        switch (SingletonDatabase.Instance.currentRehabilitationCondition)
+        {
+            case RehabilitationCondition.SIMPLE:
+            case RehabilitationCondition.GAMIFICATION:
+                spawnManager.SpawnTo(SpawnPositionType.POSITION_0);
+                break;
+            case RehabilitationCondition.COMMUNICATION:
+                spawnManager.SpawnTo(Config.PreferredSpawnPositionType);
+                break;
+        }
     }
 
     // Update is called once per frame

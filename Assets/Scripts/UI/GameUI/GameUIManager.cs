@@ -28,6 +28,10 @@ public class GameUIManager : MonoBehaviour
 
     [SerializeField] private Image gaugeImage;
 
+    [SerializeField] private RawImage birdViewImage;
+    [SerializeField] private List<Texture2D> birdViewTextures;
+    private int currentBirdViewTextureID = 0;
+
     private bool isRotating;
     private Quaternion rotationTargetPosture;
 
@@ -128,5 +132,13 @@ public class GameUIManager : MonoBehaviour
     {
         float fillAmount = (float)(currentNum - offset) / (targetNum - offset);
         gaugeImage.fillAmount = fillAmount;
+    }
+
+    public void UpdateToNextBirdView()
+    {
+        if (currentBirdViewTextureID < birdViewTextures.Count - 1)
+            currentBirdViewTextureID++;
+
+        birdViewImage.texture = birdViewTextures[currentBirdViewTextureID];
     }
 }

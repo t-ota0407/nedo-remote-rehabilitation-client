@@ -307,6 +307,13 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.utj.rendertexturecamera": {
+      "version": "https://github.com/katsumasa/RenderTextureCamera.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "a3299a984d1546368c46a12592831b86c38807d0"
+    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,
