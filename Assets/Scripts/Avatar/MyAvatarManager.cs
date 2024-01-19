@@ -43,6 +43,8 @@ public class MyAvatarManager : MonoBehaviour
 
     [SerializeField] private AllKnifeSharpeningSetupsManager allKnifeSharpeningSetupsManager;
 
+    [SerializeField] private SpawnManager spawnManager;
+
     public AvatarState AvatarState { get { return avatarState; } }
     private AvatarState avatarState;
     private DateTime avatarStateUpdatedAt;
@@ -63,9 +65,22 @@ public class MyAvatarManager : MonoBehaviour
     {
         avatarState = AvatarState.Walking;
 
+        ResetCameraHeight();
+
         SetControllerAndRaysVisibility(false);
 
         finishRehabilitationTaskProgressList = TaskProgress<FinishRehabilitationTask>.GenerateTaskProgressList();
+
+        switch (SingletonDatabase.Instance.currentRehabilitationCondition)
+        {
+            case RehabilitationCondition.SIMPLE:
+            case RehabilitationCondition.GAMIFICATION:
+                spawnManager.SpawnTo(SpawnPositionType.POSITION_0);
+                break;
+            case RehabilitationCondition.COMMUNICATION:
+                spawnManager.SpawnTo(Config.PreferredSpawnPositionType);
+                break;
+        }
     }
 
     // Update is called once per frame
@@ -256,10 +271,7 @@ public class MyAvatarManager : MonoBehaviour
             case AvatarState.Walking:
                 if (controllerInputManager.IsPressedButtonA)
                 {
-                    avatarCalibration.seatedHeadHeight = hmd.transform.localPosition.y;
-
-                    float offsetHeight = msrbAvatarConfiguration.StandardCameraHeight - avatarCalibration.seatedHeadHeight;
-                    transform.localPosition = new Vector3(0, offsetHeight, 0);
+                    ResetCameraHeight();
                 }
 
                 break;
@@ -332,6 +344,13 @@ public class MyAvatarManager : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    private void ResetCameraHeight()
+    {
+        avatarCalibration.seatedHeadHeight = hmd.transform.localPosition.y;
+        float offsetHeight = msrbAvatarConfiguration.StandardCameraHeight - avatarCalibration.seatedHeadHeight;
+        transform.localPosition = new Vector3(0, offsetHeight, 0);
     }
 
     private void SetControllerAndRaysVisibility(bool visibility)

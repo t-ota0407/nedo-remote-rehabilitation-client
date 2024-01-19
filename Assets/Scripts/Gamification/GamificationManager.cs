@@ -17,6 +17,7 @@ public class GamificationManager : MonoBehaviour
     [SerializeField] private List<EnvironmentEvent> environmentEvents = new();
     [SerializeField] private List<LogEvent> logEvents = new();
     [SerializeField] private List<FacilityEvent> facilityEvents = new();
+    [SerializeField] private List<BirdViewUpdateEvent> birdViewUpdateEvents = new();
 
     [SerializeField] private List<FacilityAutoIncrementAmount> facilityAutoIncrementAmounts = new();
 
@@ -81,11 +82,14 @@ public class GamificationManager : MonoBehaviour
             }
 
             CheckSharpenedKnifeAutoIncrement();
+
+            UpdateKnifeSharpeningTarget();
         }
 
         CheckEnvironmentEvent();
         CheckLogEvent();
         CheckFacilityEvent();
+        CheckBirdViewUpdateEvents();
     }
 
     public void ContinueGame(KnifeSharpeningSetupManager targetSharpeningSetup)
@@ -112,6 +116,32 @@ public class GamificationManager : MonoBehaviour
         GameObject knifeObject = targetKnifeSharpeningSetupManager.KnifeManager.gameObject;
         knifeObject.transform.position = reachingTargetPosition;
         knifeObject.transform.localPosition = knifeObject.transform.localPosition + new Vector3(0, -0.04f, -0.24f);
+    }
+
+    private void UpdateKnifeSharpeningTarget()
+    {
+        environmentEvents = environmentEvents
+            .OrderBy(environmentEvent => environmentEvent.sharpenedKnifeForTrigger)
+            .ToList();
+
+        int previousEnvironmentEventSharpenedKnifeForTrigger = 0;
+        foreach (EnvironmentEvent environmentEvent in environmentEvents)
+        {
+            if (environmentEvent.isApplied)
+            {
+                previousEnvironmentEventSharpenedKnifeForTrigger = environmentEvent.sharpenedKnifeForTrigger;
+                continue;
+            }
+            else
+            {
+                int current = sharpenedKnife;
+                int target = environmentEvent.sharpenedKnifeForTrigger;
+                int offset = previousEnvironmentEventSharpenedKnifeForTrigger;
+
+                gameUIManager.UpdateTargetSharpenedKnifeUI(current, target, offset);
+                break;
+            }
+        }
     }
 
     private void CheckSharpenedKnifeAutoIncrement()
@@ -245,6 +275,25 @@ public class GamificationManager : MonoBehaviour
             else
             {
                 break;
+            }
+        }
+    }
+
+    private void CheckBirdViewUpdateEvents()
+    {
+        foreach (var birdViewUpdateEvent in birdViewUpdateEvents)
+        {
+            if (!birdViewUpdateEvent.isApplied)
+            {
+                if(birdViewUpdateEvent.requiredSharpenedKnife <= sharpenedKnife)
+                {
+                    gameUIManager.UpdateToNextBirdView();
+                    birdViewUpdateEvent.isApplied = true;
+                }
+                else
+                {
+                    return;
+                }
             }
         }
     }
